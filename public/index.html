@@ -1,1 +1,981 @@
-<html><body><h1>Loading...</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Allianz Housing — Relliance Portal Tracker</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  /* HEADER */
+  #hdr{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+  .logo{font-weight:800;font-size:16px;display:flex;align-items:center;gap:9px;}
+  .logo-icon{background:linear-gradient(135deg,#2563eb,#0891b2);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
+  .logo-sep{color:#cbd5e1;margin:0 4px;}
+  .logo-sub{font-weight:500;font-size:13px;color:#64748b;}
+  #deadline-badge{font-size:12px;font-weight:700;background:#fef3c7;border:1px solid #fcd34d;color:#d97706;border-radius:6px;padding:5px 12px;}
+  #deadline-badge.urgent{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+
+  /* MAIN */
+  #main{padding:20px 24px;max-width:1500px;margin:0 auto;}
+
+  /* STATS */
+  .stat-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:18px;}
+  .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border-top:3px solid #e2e8f0;}
+  .stat-label{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:600;}
+  .stat-num{font-size:26px;font-weight:800;line-height:1;}
+  .stat-sub{font-size:10px;color:#94a3b8;margin-top:3px;}
+
+  /* PIPELINE */
+  .pipeline{background:#fff;border:1px solid #e2e8f0;border-radius:9px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .pipe-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-right:4px;}
+  .pipe-chip{display:flex;align-items:center;gap:5px;border-radius:6px;padding:4px 11px;border:1px solid;}
+  .pipe-dot{width:6px;height:6px;border-radius:50%;}
+  .pipe-name{font-size:12px;font-weight:600;}
+  .pipe-count{font-size:12px;color:#64748b;}
+
+  /* FILTERS */
+  .filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+  input,select{background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:7px 11px;color:#0f172a;font-size:13px;outline:none;box-shadow:0 1px 2px rgba(0,0,0,0.04);font-family:inherit;}
+  input:focus,select:focus{border-color:#2563eb;}
+  .filter-count{font-size:12px;color:#94a3b8;}
+
+  /* TABLE */
+  .tbl-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  table{width:100%;border-collapse:collapse;}
+  th{padding:9px 12px;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid #e2e8f0;background:#f1f5f9;white-space:nowrap;font-weight:600;}
+  td{padding:10px 12px;font-size:13px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+  tr:hover td{background:#f8fafc;cursor:pointer;}
+  tr:last-child td{border-bottom:none;}
+
+  /* BADGES */
+  .sit-badge{border-radius:5px;padding:2px 9px;font-size:11px;font-weight:700;white-space:nowrap;border:1px solid;}
+  .stage-badge{border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;}
+
+  /* BUTTONS */
+  .btn{background:#2563eb;color:#fff;border:none;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:#1d4ed8;}
+  .btn-sm{background:#f1f5f9;color:#2563eb;border:1px solid #e2e8f0;border-radius:5px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn-sm:hover{background:#e2e8f0;}
+  .btn-ghost{background:#fff;color:#64748b;border:1px solid #e2e8f0;border-radius:7px;padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .btn-amber{background:#fffbeb;color:#d97706;border:1px solid #fcd34d;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn-red{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+
+  /* PCT BAR */
+  .pct-wrap{display:flex;align-items:center;gap:5px;}
+  .pct-track{flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;min-width:60px;}
+  .pct-fill{height:100%;border-radius:3px;}
+  .pct-label{font-size:10px;font-weight:700;min-width:28px;}
+
+  /* OVERLAY */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:200;display:flex;align-items:center;justify-content:center;}
+  .overlay.hidden{display:none;}
+  .modal{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;width:560px;max-width:94vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+  .modal h3{font-weight:800;font-size:17px;margin-bottom:16px;}
+  .modal-label{font-size:12px;color:#64748b;display:block;margin-bottom:4px;font-weight:500;}
+  .form-row{margin-bottom:12px;}
+  .form-row input,.form-row select,.form-row textarea{width:100%;}
+  .form-row textarea{height:55px;resize:vertical;font-family:inherit;font-size:13px;}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;}
+
+  /* COMPLIANCE CARDS */
+  .comp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+  .comp-card{border-radius:8px;padding:10px 13px;border:1px solid;}
+  .comp-card-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;font-weight:600;}
+  .comp-card-val{font-size:14px;font-weight:700;}
+
+  /* ALERTS */
+  .alert{border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;border:1px solid;}
+  .alert-red{background:#fef2f2;border-color:#fecaca;color:#dc2626;}
+  .alert-amber{background:#fffbeb;border-color:#fcd34d;color:#d97706;}
+  .alert-green{background:#f0fdf4;border-color:#bbf7d0;color:#059669;}
+
+  /* SECTION */
+  .sec{background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .sec-head{padding:10px 14px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;background:#f8fafc;}
+  .sec-title{font-weight:700;font-size:13px;}
+  .chk-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #f1f5f9;}
+  .chk-row:last-child{border-bottom:none;}
+  .chk-label{font-size:13px;}
+
+  /* STAGE BUTTONS */
+  .stage-btns{padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;}
+  .stage-btn{padding:6px 13px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid;font-family:inherit;background:#fff;}
+  .stage-btn.active{font-weight:700;}
+
+  /* BACK */
+  .back-btn{color:#2563eb;font-size:13px;cursor:pointer;margin-bottom:16px;display:inline-flex;align-items:center;gap:4px;font-weight:600;background:none;border:none;font-family:inherit;}
+  .back-btn:hover{text-decoration:underline;}
+
+  /* PAGE HEADER */
+  .page-hdr{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px;align-items:flex-start;}
+  .page-title{font-size:20px;font-weight:800;margin-bottom:3px;}
+  .page-sub{color:#64748b;font-size:13px;}
+  .page-note{color:#d97706;font-size:12px;margin-top:3px;font-weight:500;}
+  .page-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  /* VIEWS */
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* MISC */
+  .rms-tag{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;margin-left:6px;}
+  .manual-tag{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;}
+  .ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .save-indicator{font-size:11px;color:#059669;font-weight:600;opacity:0;transition:opacity .3s;}
+  .save-indicator.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="logo">
+    <div class="logo-icon">A</div>
+    Allianz Housing
+    <span class="logo-sep">/</span>
+    <span class="logo-sub">Relliance Portal + Compliance Tracker</span>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="save-indicator" id="save-ind">✓ Saved</span>
+    <button class="btn-amber" id="unmatched-btn" onclick="showUnmatched()" style="display:none"></button>
+    <div id="deadline-badge">⏳ Loading...</div>
+  </div>
+</div>
+
+<!-- VIEWS -->
+<div id="main">
+
+  <!-- DASHBOARD -->
+  <div id="view-dash" class="view active">
+    <div class="stat-row" id="stat-row"></div>
+    <div class="pipeline" id="pipeline"></div>
+    <div class="filters">
+      <input type="text" id="search" placeholder="Search MA or company…" oninput="renderDash()" style="width:220px"/>
+      <select id="sit-filter" onchange="renderDash()">
+        <option value="all">All compliance</option>
+        <option value="A">✅ Cleared</option>
+        <option value="B">⚡ Restore Access</option>
+        <option value="C">❌ Not Complied</option>
+      </select>
+      <select id="prop-filter" onchange="renderDash()">
+        <option value="all">All MAs</option>
+        <option value="has">Has properties in RMS</option>
+        <option value="none">No properties yet</option>
+      </select>
+      <select id="stage-filter" onchange="renderDash()">
+        <option value="all">All Relliance Portal stages</option>
+      </select>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+    <div class="tbl-wrap">
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Compliance</th><th>Company</th><th>Contact</th>
+              <th>SLA</th><th>ID</th><th>DBS</th><th>RMS Access</th>
+              <th>Props in RMS</th><th>On Relliance Portal</th>
+              <th>Missing Compliance</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="dash-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MA DETAIL -->
+  <div id="view-ma" class="view">
+    <button class="back-btn" onclick="showDash()">← Dashboard</button>
+    <div class="page-hdr">
+      <div>
+        <div class="page-title" id="ma-title"></div>
+        <div class="page-sub" id="ma-sub"></div>
+        <div class="page-note" id="ma-note" style="display:none"></div>
+      </div>
+      <div class="page-actions">
+        <span id="ma-sit-badge"></span>
+        <button class="btn-sm" onclick="openEditComp()">Edit Compliance</button>
+        <button class="btn" onclick="openAddProp()">+ Add Property</button>
+      </div>
+    </div>
+    <div class="comp-grid" id="comp-grid"></div>
+    <div id="ma-alert" style="display:none"></div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-title" id="props-title">Properties in RMS</span></div>
+      <div id="props-content"></div>
+    </div>
+  </div>
+
+  <!-- PROPERTY DETAIL -->
+  <div id="view-prop" class="view">
+    <button class="back-btn" id="prop-back-btn">← Back</button>
+    <div class="page-hdr">
+      <div>
+        <div class="page-title" id="prop-title"></div>
+        <div class="page-sub" id="prop-sub"></div>
+      </div>
+      <span id="prop-stage-badge"></span>
+    </div>
+    <div id="prop-alert" style="display:none"></div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-title">Uploaded to Relliance Portal — Stage</span></div>
+      <div class="stage-btns" id="stage-btns"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="sec">
+        <div class="sec-head">
+          <span class="sec-title" id="cert-title">RMS Certificates</span>
+          <div class="pct-wrap" style="width:120px"><div class="pct-track"><div class="pct-fill" id="cert-bar"></div></div><span class="pct-label" id="cert-pct"></span></div>
+        </div>
+        <div id="cert-list"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-head">
+          <span class="sec-title" id="doc-title">RMS Documents</span>
+          <div class="pct-wrap" style="width:120px"><div class="pct-track"><div class="pct-fill" id="doc-bar"></div></div><span class="pct-label" id="doc-pct"></span></div>
+        </div>
+        <div id="doc-list"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODALS -->
+<div class="overlay hidden" id="modal-add-prop">
+  <div class="modal">
+    <h3 id="add-prop-title">Add Property</h3>
+    <div class="form-row"><label class="modal-label">Address *</label><input type="text" id="new-addr"/></div>
+    <div class="form-row"><label class="modal-label">Type (e.g. 2-bed flat)</label><input type="text" id="new-type"/></div>
+    <div class="form-row"><label class="modal-label">Council</label><input type="text" id="new-council"/></div>
+    <div class="form-row"><label class="modal-label">Uploaded to Relliance Portal — Stage</label><select id="new-stage"></select></div>
+    <div class="modal-actions"><button class="btn" onclick="addProp()">Add Property</button><button class="btn-ghost" onclick="closeModal('modal-add-prop')">Cancel</button></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-edit-comp">
+  <div class="modal">
+    <h3 id="edit-comp-title">Edit Compliance</h3>
+    <div class="form-row"><label class="modal-label">SLA Agreement</label>
+      <select id="ec-sla"><option>Signed</option><option>Pending</option><option>Not Required</option></select>
+    </div>
+    <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #f1f5f9;">
+        <span style="font-size:13px;font-weight:500;">ID Check</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="ec-id" style="width:16px;height:16px;accent-color:#059669;cursor:pointer;box-shadow:none;border:none;padding:0;"/>
+          <span id="ec-id-label" style="font-size:13px;font-weight:700;"></span>
+        </label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #f1f5f9;">
+        <span style="font-size:13px;font-weight:500;">DBS</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="ec-dbs" style="width:16px;height:16px;accent-color:#059669;cursor:pointer;box-shadow:none;border:none;padding:0;"/>
+          <span id="ec-dbs-label" style="font-size:13px;font-weight:700;"></span>
+        </label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;">
+        <span style="font-size:13px;font-weight:500;">RMS Access</span>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="ec-rms" style="width:16px;height:16px;accent-color:#059669;cursor:pointer;box-shadow:none;border:none;padding:0;"/>
+          <span id="ec-rms-label" style="font-size:13px;font-weight:700;"></span>
+        </label>
+      </div>
+    </div>
+    <div class="form-row"><label class="modal-label">Notes</label><textarea id="ec-notes"></textarea></div>
+    <div class="modal-actions"><button class="btn" onclick="saveEditComp()">Save</button><button class="btn-ghost" onclick="closeModal('modal-edit-comp')">Close</button></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-unmatched">
+  <div class="modal">
+    <h3 style="color:#d97706;">⚠ Unmatched Organisations in RMS</h3>
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px;">These appear in the RMS property export but don't match any MA in your list. May be internal/test entries or a different batch.</p>
+    <div id="unmatched-list"></div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="closeModal('modal-unmatched')">Close</button></div>
+  </div>
+</div>
+
+<script>
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const CERTS = [
+  "Asbestos Report","Buildings Insurance","Damp Report",
+  "Electrical Safety Inspection","Emergency Lighting","Energy Performance",
+  "Fire Detection/Alarm","Fire Risk Assessment","Gas Safety Certificate",
+  "Portable Appliance Testing"
+];
+const DOCS = ["Floor Plan","Lease Agreement","Letter Of Authority","Title Deed"];
+
+const STAGES = [
+  {id:"not_uploaded",   label:"Not Uploaded to Relliance Portal",          short:"Not Uploaded",        color:"#94a3b8"},
+  {id:"details_sub",    label:"Details Submitted to Relliance Portal",      short:"Details Submitted",   color:"#f59e0b"},
+  {id:"details_app",    label:"Details Approved by Relliance",              short:"Details Approved",    color:"#2563eb"},
+  {id:"awaiting",       label:"Awaiting Acceptance",                        short:"Awaiting Acceptance", color:"#f97316"},
+  {id:"certs_up",       label:"Certs Uploaded to Relliance Portal",         short:"Certs Uploaded",      color:"#7c3aed"},
+  {id:"accepted",       label:"Accepted by Relliance",                      short:"Accepted ✓",          color:"#059669"},
+];
+
+const SIT_CONFIG = {
+  A:{label:"Cleared",           color:"#059669",bg:"#d1fae5",border:"#6ee7b7"},
+  B:{label:"⚡ Restore Access", color:"#d97706",bg:"#fef3c7",border:"#fcd34d"},
+  C:{label:"Not Complied",      color:"#dc2626",bg:"#fee2e2",border:"#fca5a5"},
+};
+
+const DEADLINE = new Date("2026-05-19T23:59:00"); // Tuesday
+
+// ─── MA MASTER DATA ───────────────────────────────────────────────────────────
+const MA_MASTER = [
+  {fn:"Peter",ln:"Breheny",email:"peter@prosperitypropertyinvestments.com",company:"Prosperity Property Investments Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Philip",ln:"Dalgleish",email:"dalgleishproperties@gmail.com",company:"Dalgleish Properties Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Ali",ln:"Kapasi",email:"ali.kapasi63@gmail.com",company:"AKHK LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"Changed Co Details needs new SLA (27/04)"},
+  {fn:"John",ln:"Smits",email:"john@dtassets.co.uk",company:"D & T ASSETS LIMITED",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Yamina",ln:"Zertal",email:"yamina.mezeli@googlemail.com",company:"NORTHGATE LIVING LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Daniel",ln:"Chambers",email:"enquiries@alfredthomasproperty.co.uk",company:"Alfred Thomas Property Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent on 14/04"},
+  {fn:"Saeed",ln:"Muhammad",email:"brainwave.properties@gmail.com",company:"BRAINWAVE INVESTMENTS LIMITED",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Peter",ln:"Kiss",email:"propertybuyinguk@gmail.com",company:"Umbrella Management Services Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent on 14/04"},
+  {fn:"Christine",ln:"Hertoghe",email:"christinehertoghe@icloud.com",company:"AVALON PROPERTY SOLUTIONS LIMITED",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Fatih",ln:"Dikili",email:"fatihdikili@gmail.com",company:"Dkly ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Catherine",ln:"Kinyua",email:"info@alpineridgeproperties.co.uk",company:"Alpine Ridge Properties",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Sylvia",ln:"Chan",email:"joy.portfolio.ltd@gmail.com",company:"Joy Property Portfolio Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04 — co name changed 07/05"},
+  {fn:"Nick",ln:"Sunnar",email:"enquiries@assetwiseinvestments.com",company:"Asset Wise Group Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Helen",ln:"Parker",email:"helen@anotherproduction.co.uk",company:"THAP PROPERTIES LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Jamie",ln:"Moise",email:"esiomhomes@gmail.com",company:"Moise Prop limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent on 14/04"},
+  {fn:"Jag",ln:"Rai",email:"jag@cotodevelopments.com",company:"RIDGEBACK PROPERTIES (BRISTOL) LIMITED",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent on 14/04"},
+  {fn:"Bhupinderjit (Jassy)",ln:"Sidhu",email:"jassy@yourpropertyventures.co.uk",company:"BSS Properties Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"New SLA sent 13/05 & 15/05"},
+  {fn:"Sukjinder",ln:"Tiwana",email:"office@pitpropertymanagement.com",company:"Property Inventory Tracker Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent 14/04"},
+  {fn:"Sarvjit",ln:"Kooner",email:"sarvjitkooner@hotmail.com",company:"Homes For UK Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent 14/04 — also looking to change Co"},
+  {fn:"Nicole",ln:"Griese",email:"contact@nixproperty.com",company:"Nix Property Collective LTD",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Kim",ln:"Geidelberg",email:"kim_geidelberg@hotmail.com",company:"Linx Investments Ltd",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Maj",ln:"Hussain",email:"majidhussain044@gmail.com",company:"Connect Housing Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Mithila",ln:"Rollings-Kamara",email:"mithila@weareideal.co.uk",company:"IUL Lettings Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Raymond",ln:"Lau",email:"raylau_sg@hotmail.com",company:"Keys & Homes Property Limited",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:"SLA sent on 14/04"},
+  {fn:"Anne (Mai)",ln:"Le",email:"mtlpropertyinvestment@gmail.com",company:"MTL Property Investment Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"Both directors DBS rec'd"},
+  {fn:"Shania",ln:"Woodruff-Ellens",email:"home@bestnests.co",company:"BEST NESTS DORSET LIMITED",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Lucy",ln:"Thuo",email:"info@ltrpropertyinvestors.com",company:"Ltr property investor limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"SLA sent 16/04"},
+  {fn:"Sreelal",ln:"Harilal",email:"sreelal@providenthomes.co.uk",company:"Provident Lettings Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"DBS 2nd Director rec'd"},
+  {fn:"Simon",ln:"Coles",email:"simoncoles@tpexpert.co.uk",company:"Tre Kernow Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Arthur",ln:"Jones",email:"arthur@upliftcommunityhomes.com",company:"Uplift Property Investments Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Scott",ln:"Lewington",email:"sl@slendeavours.org",company:"SL Endeavours Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Rhett",ln:"Brewer",email:"rhettbrewer@outlook.com",company:"Boost Consultant Service Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Maria",ln:"Velit",email:"northofp@gmail.com",company:"North of Purley",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"David",ln:"C. Hall",email:"davidchall2108@gmail.com",company:"Greatness Living Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Laetitia",ln:"Beatty",email:"info@mapleview.co.uk",company:"Maia Housing Solution LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"2nd director DBS rec'd"},
+  {fn:"Delielah",ln:"Teves",email:"delielah.teves@yahoo.co.uk",company:"Teves Group Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent 18/04"},
+  {fn:"Paul",ln:"Caden",email:"sourcing@cadenpropertygroup.co.uk",company:"Caden Property Services Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Claire",ln:"Cunden",email:"ccunden@hotmail.co.uk",company:"Property Nested Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Nimit",ln:"Jethwa",email:"njethwa@aalayhousing.co.uk",company:"AALAY HOUSING LIMITED",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Israel",ln:"Silgram",email:"israel.silgram@elevatesl.co.uk",company:"Rhema social impact group",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"2 Directors"},
+  {fn:"Mahaaz",ln:"Ahmed",email:"mahaaz.ahmed@hotmail.com",company:"Heron properties Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Theresa",ln:"Egbuniwe",email:"tesakuziem@yahoo.com",company:"AVION KEY HOMES LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Kerry",ln:"Taylor",email:"kerry@propertylady.co.uk",company:"Synchroplicity",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ron",ln:"Henderson",email:"ron2000ad@btinternet.com",company:"Pathway Living Solutions LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Paul",ln:"Devlin",email:"wishingwellproperties72@gmail.com",company:"Wishingwellproperties Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Kwok",ln:"On Wu",email:"samy@harmonylandproperty.co.uk",company:"Harmony Land Investment Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jaspal",ln:"Sandhu",email:"jaspal2010@live.co.uk",company:"copperfield property developments LTD",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Ali",ln:"Haider",email:"alihaiderjoy@gmail.com",company:"J Properties London limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"David",ln:"Ejiogu",email:"fabcribs@gmail.com",company:"Fabcribs Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Jasvinder",ln:"Gill",email:"jas@cognisantgroup.co.uk",company:"Cognisant Investments Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Saif",ln:"Lutfi",email:"saifmc09@gmail.com",company:"SAL ALLIANCE LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Lydia",ln:"Carr",email:"lyds.cat55@gmail.com",company:"Golden Keys Properties Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Lily",ln:"Hammarlund Sim",email:"lilyclaudiasim@gmail.com",company:"Keys & Homes Property Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Avinash",ln:"Thota",email:"thota22@gmail.com",company:"Thota Estates LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Enrico",ln:"Fuchs",email:"ariel.fuchs@sourced.co",company:"LANDBRICK LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Norma",ln:"Labor",email:"labor.investments@yahoo.com",company:"City Integrity Property LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Leah",ln:"Elliott",email:"dkl3graces@outlook.com",company:"DKL PROFESSIONALS LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Rita",ln:"Adu-Peprah",email:"rita.adu-peprah@pephavengroup.com",company:"PEPHAVEN GROUP LIMITED",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ashley",ln:"Mcpherson",email:"mcpherson.properties@outlook.com",company:"McPherson property ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jeremy",ln:"Logan",email:"jezlogan@outlook.com",company:"J P Logan Properties Ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Liesl",ln:"Beavington",email:"beavingtons@doctors.org.uk",company:"Richly Green Property Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Karmenah",ln:"Vaziraney",email:"karmenah@honeyoakdevelopments.co.uk",company:"Honey Oak Developments",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Per",ln:"Hammarlund",email:"info@hsoproperty.co.uk",company:"Hammarlund Sim Investment Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ravi",ln:"Selvarajah",email:"ravi@arconsulting.info",company:"Ar Consulting Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Alyce",ln:"Chappell",email:"alyce@fleetventures.uk",company:"Fleet Ventures Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"James",ln:"Parr",email:"admin@parrproperties.uk",company:"Parr Properties Ltd",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:""},
+  {fn:"Michael",ln:"Chadwick",email:"office@mcr-property.com",company:"MCR Residential Property Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Cyril",ln:"Jones",email:"cyriljones@ntlworld.com",company:"Manhattan Living Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"Co change — needs new SLA"},
+  {fn:"Sarah",ln:"De Boer",email:"sdeboer@hotmail.co.uk",company:"Dartstone Property Partners Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Balabalendra",ln:"Balendra",email:"bbalendra@hotmail.com",company:"Endra estates limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Dominic",ln:"Vanderstay",email:"dominic@calverleyenterprises.co.uk",company:"Calverley Enterprises Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Murray",ln:"Howison",email:"murray.howison@chartergate.eu",company:"Gladbourne Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Nicholas",ln:"Weaver",email:"admin@thomasroseproperties.co.uk",company:"Thomas Rose Properties",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Caroline",ln:"Hine",email:"hine.caroline@gmail.com",company:"De Novo Design Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Marina",ln:"Kwok",email:"mhkwok2210@gmail.com",company:"Alders Capital",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Michael",ln:"Ackah",email:"mackah999@yahoo.co.uk",company:"Acco management Ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Tim",ln:"Kneller",email:"tim.kneller@adventum.co.uk",company:"Adventum Property Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Simon",ln:"Paul",email:"simon@thepropertypeopleltd.com",company:"Peak Property Rentals Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"DBS for 2nd Director"},
+  {fn:"Ruth",ln:"Sarpong",email:"radoma32@yahoo.com",company:"Proud Homes Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Virginie",ln:"Oloui",email:"virginie.yai@protonmail.com",company:"SevenP Ventures",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"DBS for 2nd director rec'd"},
+  {fn:"Tij",ln:"Heer",email:"info@ivypropertysourcing.co.uk",company:"Ivy Property Sourcing ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Rentia",ln:"Pienaar",email:"rentia@propedera.com",company:"Propedera ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Nina",ln:"Street",email:"nina@jnstreetproperties.co.uk",company:"JN Street Properties",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Luke",ln:"Ballard",email:"info@pinelee.co.uk",company:"Pinelee Estate Investments Limited",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:"DBS 2nd Director rec'd"},
+  {fn:"Amit",ln:"Somaiya",email:"amit@ensigniasolutions.com",company:"Ensignia Client Solutions Limited",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Carlton",ln:"Mcfarlane",email:"carlton@ilicmcfarlane.io",company:"Ilic McFarlane Investment Group Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jill",ln:"Hepworth",email:"jillhepworth23@gmail.com",company:"Manybricks Property Development Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Sarah",ln:"Green",email:"thepropertymidwife@gmail.com",company:"SupportivePropertiesLtd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"David",ln:"Clark",email:"info@loggerheadproperties.co.uk",company:"loggerhead properties ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Amro",ln:"Diab",email:"adiab@hotmail.co.uk",company:"Ayla Investments",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Pauline",ln:"Hudson",email:"info@securepropertyleasing.com",company:"Secure Property Leasing Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"Co name checked with SLA"},
+  {fn:"Brad",ln:"Crann",email:"Brad.Crann@crannpropertyinvestments.com",company:"Crann property investments ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"James",ln:"Stockwin",email:"stockwingroup@outlook.com",company:"Fourcee Investments ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Wayne",ln:"Cooksley",email:"wayne@jewlpropertyinvestments.com",company:"JEWL Property Investments Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Lee",ln:"Millon",email:"leem_444@icloud.com",company:"The honey badger investments ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Comfort",ln:"O'Brien",email:"comfort.obrien@sagesteinproperties.com",company:"SAGE STEIN PROPERTIES LTD",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:""},
+  {fn:"Will",ln:"Wallis",email:"w.wallis@btinternet.com",company:"DeltaWest Housing Partners Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"Co name changed from Xnborne Capital 06/05/26"},
+  {fn:"Darren",ln:"Hailwood",email:"hello@sourcedpropertyfinder.co.uk",company:"Sourced Property Finder",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Lee",ln:"Mcgoldrick",email:"lee@mcgoldrick-group.com",company:"Mc7 Homes Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ashfak",ln:"Gaibi",email:"ashfak@bk2y.life",company:"TCH - Perth Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:false,notes:"Co name changed from Tudor Court Holdings. ⚡ Restore RMS access."},
+  {fn:"Francien",ln:"Tersteeg",email:"francien@fivewisetrading.co.uk",company:"Soleggiato BV",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"EMAIL SENT"},
+  {fn:"Jamie",ln:"Wadman",email:"jamie@styloliving.co.uk",company:"JTJ investments ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ron",ln:"Mason",email:"mango1@dr.com",company:"ROKELL PROPERTIES LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Kobi",ln:"Beck",email:"info@buildingpossibilities.co.uk",company:"Building possibilities ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Peter",ln:"Court",email:"pnacourt@gmail.com",company:"Solent Business Services Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Tim",ln:"Rees",email:"treesproperties@gmail.com",company:"Trees Properties Limited",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:""},
+  {fn:"Jeevan",ln:"Boyal",email:"jeevan.boyal@gmail.com",company:"G.T.A.M medical",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent 19/04"},
+  {fn:"Graham",ln:"Cox",email:"graham@audaciousproperty.com",company:"Audacious Property Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Pauline",ln:"Ross",email:"pauline@pavalepropertyinvestmentsltd.com",company:"Pavale Property Investments Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jake",ln:"Wilson",email:"Jakew1782@gmail.com",company:"NORTHERN NEST RELOCATIONS LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"Amanda has authority / New SLA sent 29/04"},
+  {fn:"Steve",ln:"Octon",email:"sopropltd@gmail.com",company:"SO PROP LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Raj",ln:"Beri",email:"rajberi@hotmail.co.uk",company:"Rohan Properties",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Niraj",ln:"Bhudia",email:"nirajbhudia@hotmail.com",company:"Niko investments ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Harry",ln:"Wiechers",email:"info@b-si.nl",company:"Business success institute bv",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jethro",ln:"Turner",email:"jethroturner@hotmail.com",company:"BHX PROPERTY GROUP LTD",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"DBS 2nd director rec'd"},
+  {fn:"Elena",ln:"Stoyanova",email:"elena@lovitproperty.co.uk",company:"LOVIT Property Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Judith",ln:"Leeb",email:"judith.leeb@gmx.net",company:"Eastern & Lothian Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Parmy",ln:"Bindra",email:"midlandsps@outlook.com",company:"Midlands Property Specialists Limited",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Frank",ln:"Smits",email:"info@benefit-realestate.com",company:"Benefit Real Estate",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Samantha",ln:"Tydeman Fox",email:"samantha@foxwiseproperties.co.uk",company:"Foxwise Properties Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Josiah",ln:"Taylor",email:"josiah.c.taylor@gmail.com",company:"Jc taylor residential limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Ruud",ln:"Triou",email:"ruud.triou@ttxs.nl",company:"THREEHOUSE HOMES LTD",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Jon",ln:"Reynolds",email:"jon@epcbright.co.uk",company:"EPC Bright Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jim",ln:"Hobson",email:"jim@red-panda-property.co.uk",company:"Red Panda Property",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Ailie",ln:"Suzuki",email:"ailie.k.suzuki@gmail.com",company:"OraKai Living Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Andrew",ln:"Potter",email:"andy@oconnell-dunn.com",company:"O'Connell Dunn Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Paul",ln:"Lyons",email:"paul@lydenproperty.com",company:"Lyden Property Limited",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:"DBS for 2nd director received"},
+  {fn:"Carla",ln:"Wallace",email:"wallaceprimeproperty@gmail.com",company:"Elevated Living Solutions Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Brian",ln:"Quearney",email:"doora.property@outlook.com",company:"Doora Property Ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Saida",ln:"Hasni",email:"hisaltd@outlook.com",company:"HISA LTD",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Peter",ln:"Harris",email:"boss@petalgroup.co.uk",company:"Petal Developments Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"James",ln:"Edwards",email:"info@essed.co.uk",company:"Essed Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Chancelle",ln:"De Freitas",email:"chellycress@gmail.com",company:"MADF Properties",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"EMAIL SENT"},
+  {fn:"Melissa (Mo)",ln:"Jones",email:"mo@mypropertyangels.co.uk",company:"Super SAs Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Ad",ln:"Stander",email:"ad@maverickhousing.co.uk",company:"Maverickhousing",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Steve",ln:"Mccarthy",email:"mccar45@hotmail.com",company:"McCarthy Properties (Midlands)",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Michelle",ln:"Cairns",email:"michelle@michellecairns.com",company:"Feather Properties Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Jason",ln:"Nelson",email:"jason@motionproperties.co.uk",company:"Motion Properties Ltd",sla:"Signed",idCheck:true,dbs:false,rmsAccess:false,notes:"DBS outstanding"},
+  {fn:"Alison",ln:"Symonds",email:"alison.symonds@sky.com",company:"Legacy Property & Investments Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Lisa",ln:"Tope",email:"lisa.tope@looklineproperty.co.uk",company:"Lookline Property Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Alan",ln:"Edwards",email:"alanjedwards2@gmail.com",company:"Alpus SH Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"Ana Lipcheva SLA to Co Director"},
+  {fn:"Michael",ln:"Donovan",email:"donovan.m@cortadoproperty.co.uk",company:"Cortado Property Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Eliana",ln:"Monteiro",email:"renestproperties@gmail.com",company:"RE Nest Properties",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Simon",ln:"Zutshi",email:"simon_zutshi@hotmail.com",company:"BG2 Ltd",sla:"Not Required",idCheck:false,dbs:true,rmsAccess:true,notes:"Not required — AUTH by Hanif 13/05"},
+  {fn:"Adam",ln:"Ross",email:"adam@officium.uk",company:"The Officium Group Ltd",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Michael",ln:"Verma",email:"michael@carefirstgroup.co.uk",company:"Care first Smethwick Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Jay",ln:"Chauhan",email:"jay@berkshire-living.co.uk",company:"Berkshire Living LIMITED",sla:"Signed",idCheck:true,dbs:false,rmsAccess:true,notes:"DBS outstanding — has access"},
+  {fn:"Nisha",ln:"Patel",email:"info@carepropertyhub.co.uk",company:"Care Property Hub",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"Paul",ln:"Collyer",email:"paul@portfoliosalesconsultancy.co.uk",company:"Portfolio Sales Consultancy Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Daryl",ln:"Lai",email:"daryl@dm-properties.co.uk",company:"DMP Assets Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Bimbi",ln:"Fernando",email:"bimbi.fernando@gmail.com",company:"Athena's Avenue Properties Limited",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Abena",ln:"Akom",email:"abenaakom@yahoo.co.uk",company:"NAKARELE Ltd",sla:"Pending",idCheck:false,dbs:true,rmsAccess:false,notes:""},
+  {fn:"Irene",ln:"Anggard Agnell",email:"ireneagnell@gmail.com",company:"PROSPER LETTINGS LIMITED",sla:"Signed",idCheck:true,dbs:true,rmsAccess:true,notes:""},
+  {fn:"John",ln:"Gardner",email:"john@testconsultant.com",company:"Bourne Sourcing Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:""},
+  {fn:"Lavinia",ln:"Goddard",email:"info@dealhauscollective.co.uk",company:"DealHaus Collective Ltd",sla:"Pending",idCheck:false,dbs:false,rmsAccess:false,notes:"SLA sent on 15/05"},
+];
+
+const RMS_PROPS = [
+  {org:"AALAY HOUSING LIMITED",addr:"22 Fenton Street B66 1HR",council:"Sandwell",type:""},
+  {org:"PROSPER LETTINGS LIMITED",addr:"48 Pembroke Street SN1 3LY",council:"Swindon",type:""},
+  {org:"Peak Property Rentals Ltd",addr:"Flat 4 Grindford House SK17 6LP",council:"Derbyshire",type:"Flat"},
+  {org:"Peak Property Rentals Ltd",addr:"Flat 3 Grindford House SK17 8LP",council:"Derbyshire",type:"Flat"},
+  {org:"Peak Property Rentals Ltd",addr:"30A High Street SK17 6EU",council:"Derbyshire",type:""},
+  {org:"THE OFFICIUM GROUP LTD",addr:"40 Nicholls Street B70 6HN",council:"Sandwell",type:""},
+  {org:"Homes For UK Ltd",addr:"26 Sangha Close LE3 9SW",council:"Leicester",type:""},
+  {org:"Homes For UK Ltd",addr:"38 Horsewell Lane LE18 2HQ",council:"Oadby & Wigston",type:""},
+  {org:"AKHK LTD",addr:"451 Bury Road BL2 6DF",council:"Bolton",type:""},
+  {org:"Secure Property Leasing Ltd",addr:"44 Ivanhoe Street LE3 9GW",council:"Leicester",type:""},
+  {org:"Manhattan Living Limited",addr:"81 Foxcombe CR0 9EZ",council:"Croydon",type:""},
+  {org:"Manhattan Living Limited",addr:"78 Long Lane CR0 7AP",council:"Croydon",type:""},
+  {org:"O'Connell Dunn Ltd",addr:"66 Thorntons Close DH2 1QH",council:"Durham",type:""},
+  {org:"Alfred Thomas Property Ltd",addr:"4 Dexter Avenue NG31 7EL",council:"South Kesteven",type:"House"},
+  {org:"Alfred Thomas Property Ltd",addr:"5 College Street NG31 6HG",council:"South Kesteven",type:""},
+  {org:"Alfred Thomas Property Ltd",addr:"8 DE1 3PU",council:"Derby",type:""},
+  {org:"Dalgleish Properties Ltd",addr:"451 Shoreham Street S2 4FB",council:"Sheffield",type:""},
+  {org:"BSS Properties Ltd",addr:"38 Stonedale TF7 4AJ",council:"Telford & Wrekin",type:"House"},
+  {org:"BSS Properties Ltd",addr:"76 Smallwood TF7 4HN",council:"Telford & Wrekin",type:""},
+  {org:"BSS Properties Ltd",addr:"75 Smallwood TF7 4HN",council:"Telford & Wrekin",type:""},
+  {org:"BHX PROPERTY GROUP LTD",addr:"4 Rye Croft B47 5HU",council:"Birmingham",type:""},
+  {org:"Feather Properties Ltd",addr:"4 Village Court CH43 6XN",council:"Wirral",type:""},
+  {org:"Ensignia Client Solutions Limited",addr:"111 LE3 0JU",council:"Leicester",type:""},
+  {org:"Ensignia Client Solutions Limited",addr:"16 LE3 2BD",council:"Leicester",type:""},
+  {org:"Care Property Hub",addr:"Flat 1 Maple House B98 7DQ",council:"Redditch",type:"Flat"},
+  {org:"Care Property Hub",addr:"Flat 5 Maple House B98 7DQ",council:"Redditch",type:"Flat"},
+  {org:"SAL ALLIANCE LTD",addr:"33 Sidegate Lane West IP4 3BX",council:"Ipswich",type:""},
+  {org:"Berkshire Living LIMITED",addr:"Flat 1, 180 Wantage Road RG30 2SJ",council:"Reading",type:"Flat"},
+  {org:"Berkshire Living LIMITED",addr:"87 Norfolk Road RG30 2EG",council:"Reading",type:""},
+  {org:"Berkshire Living LIMITED",addr:"Flat 1 RG30 2RR",council:"Reading",type:"Flat"},
+  {org:"Umbrella Management Services Ltd",addr:"40 Two Saints Close NR12 8QR",council:"North Norwich",type:""},
+  {org:"Umbrella Management Services Ltd",addr:"19 Allnutt Way SW4 9RG",council:"Lambeth",type:""},
+  {org:"Umbrella Management Services Ltd",addr:"9 Alamein Road DA9 0DZ",council:"Dartford",type:""},
+  {org:"BEST NESTS DORSET LIMITED",addr:"2 Garland Road BH15 2LA",council:"Bournemouth Christchurch Poole",type:""},
+  {org:"Doora Property Ltd",addr:"18 Warson Road S80 2BB",council:"Nottinghamshire",type:""},
+  {org:"Prosperity Property Investments Limited",addr:"80c Ellesmere Road WN5 9LD",council:"Wigan",type:"Flat"},
+  {org:"Prosperity Property Investments Limited",addr:"30a Lonsdale Walk WN5 0DZ",council:"Wigan",type:"Flat"},
+  {org:"Prosperity Property Investments Limited",addr:"81 Skylark Rise WA9 2PQ",council:"St Helens",type:"HMO"},
+  {org:"Prosperity Property Investments Limited",addr:"211 Mount Pleasant Ave WA9 2PT",council:"St Helens",type:"HMO"},
+  {org:"Prosperity Property Investments Limited",addr:"5 Levisham Gardens WA5 0GD",council:"Warrington",type:"HMO"},
+  {org:"D & T ASSETS LIMITED",addr:"69 Sint Michaels Street NG17 4GN",council:"Ashfield",type:""},
+  {org:"NORTHGATE LIVING LTD",addr:"17 Norwich Road L15 9HL",council:"Liverpool",type:""},
+  {org:"BRAINWAVE INVESTMENTS LIMITED",addr:"102 Gillott Road B16 0ES",council:"Birmingham",type:""},
+  {org:"AVALON PROPERTY SOLUTIONS LIMITED",addr:"Flat 1 PE3 6AB",council:"Peterborough",type:"Flat"},
+  {org:"Dkly ltd",addr:"40 Bure Close PE27 3FE",council:"Huntingdonshire",type:""},
+  {org:"Alpine Ridge Properties",addr:"7 Baron Close SN3 4XQ",council:"Swindon",type:""},
+  {org:"Joy Property Portfolio Ltd",addr:"101 Apex Lofts B12 0BA",council:"Birmingham",type:"Flat"},
+  {org:"Joy Property Portfolio Ltd",addr:"19 Lowthian Road TS24 8BH",council:"Hartlepool",type:"HMO"},
+  {org:"THAP PROPERTIES LTD",addr:"64 St Loys Road N17 6UD",council:"Haringey",type:""},
+  {org:"Moise Prop limited",addr:"Ground Floor Flat SE19 1PA",council:"Lambeth",type:"Flat"},
+  {org:"RIDGEBACK PROPERTIES (BRISTOL) LIMITED",addr:"2 Hinton Road BS16 3UN",council:"Solihull",type:""},
+  {org:"Calverley Enterprises Limited",addr:"199a E4 8LP",council:"Waltham Forest",type:""},
+  {org:"Calverley Enterprises Limited",addr:"Flat 4 CT9 2HF",council:"Thanet",type:"Flat"},
+  {org:"Calverley Enterprises Limited",addr:"Flat 3 CT9 2HF",council:"Thanet",type:"Flat"},
+  {org:"Calverley Enterprises Limited",addr:"Flat 2 CT9 2HF",council:"Thanet",type:"Flat"},
+  {org:"Calverley Enterprises Limited",addr:"Flat 1 CT9 2HF",council:"Thanet",type:"Flat"},
+];
+
+const UNMATCHED_ORGS_RAW = ["KANDR PROPERTY SERVICES 2026 LIMITED","Vimdal Realty Limited","SwallowField Limited","Price Reece Property Services Ltd","SHUK-01 LTD.","AirWurx Limited","AK technical Services LTD","Ayaan Zeb Properties","Paulines properties Ltd"];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let state = { mas: [] };
+let currentMaUid = null;
+let currentPropId = null;
+
+function norm(s){ return s.toLowerCase().replace(/[^a-z0-9]/g,""); }
+function blankC(){ return Object.fromEntries(CERTS.map(c=>[c,false])); }
+function blankD(){ return Object.fromEntries(DOCS.map(d=>[d,false])); }
+function pctOf(obj){ const v=Object.values(obj); return v.length?Math.round(v.filter(Boolean).length/v.length*100):0; }
+function stg(id){ return STAGES.find(s=>s.id===id)||STAGES[0]; }
+function getSit(ma){
+  const ok=(ma.sla==="Signed"||ma.sla==="Not Required")&&ma.idCheck&&ma.dbs;
+  if(ok&&ma.rmsAccess) return "A";
+  if(ok&&!ma.rmsAccess) return "B";
+  return "C";
+}
+function missingC(ma){
+  const m=[];
+  if(ma.sla!=="Signed"&&ma.sla!=="Not Required") m.push("SLA");
+  if(!ma.idCheck) m.push("ID Check");
+  if(!ma.dbs&&ma.sla!=="Not Required") m.push("DBS");
+  return m;
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function buildInitial(){
+  return MA_MASTER.map((m,i)=>{
+    const nc=norm(m.company);
+    const matched=RMS_PROPS.filter(p=>{
+      const no=norm(p.org);
+      return no===nc||no.includes(nc.slice(0,10))||nc.includes(no.slice(0,10));
+    });
+    return {
+      ...m, uid:`ma-${i}`,
+      properties: matched.map((p,pi)=>({
+        id:`p-${i}-${pi}`,address:p.addr,type:p.type,council:p.council,
+        rellianceStage:"not_uploaded",certs:blankC(),docs:blankD(),fromRMS:true,
+      }))
+    };
+  });
+}
+
+async function loadState(){
+  try{
+    const res = await fetch("/api/data");
+    const saved = await res.json();
+    if(saved && saved.mas && saved.mas.length > 0){
+      state = saved;
+      console.log("Loaded state from server");
+    } else {
+      state = {mas: buildInitial()};
+      await saveState();
+    }
+  } catch(e){
+    console.error("Load failed", e);
+    state = {mas: buildInitial()};
+  }
+}
+
+async function saveState(){
+  try{
+    await fetch("/api/data", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(state)
+    });
+    const ind=document.getElementById("save-ind");
+    ind.classList.add("show");
+    setTimeout(()=>ind.classList.remove("show"),2000);
+  } catch(e){ console.error("Save failed",e); }
+}
+
+// ─── DEADLINE COUNTDOWN ───────────────────────────────────────────────────────
+function updateDeadline(){
+  const now=new Date();
+  const diff=DEADLINE-now;
+  const badge=document.getElementById("deadline-badge");
+  if(diff<=0){
+    badge.textContent="⛔ Relliance Portal CLOSED";
+    badge.classList.add("urgent");
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  badge.textContent=`⏳ Portal closes in: ${d}d ${h}h ${m}m ${s}s`;
+  if(diff<172800000) badge.classList.add("urgent");
+  else badge.classList.remove("urgent");
+}
+
+// ─── VIEWS ────────────────────────────────────────────────────────────────────
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+id).classList.add("active");
+}
+function showDash(){ showView("dash"); currentMaUid=null; currentPropId=null; renderDash(); }
+function showMa(uid){ currentMaUid=uid; showView("ma"); renderMa(); }
+function showProp(maUid,propId){ currentMaUid=maUid; currentPropId=propId; showView("prop"); renderProp(); }
+
+// ─── RENDER HELPERS ───────────────────────────────────────────────────────────
+function sitBadge(sit){
+  const s=SIT_CONFIG[sit];
+  return `<span class="sit-badge" style="color:${s.color};background:${s.bg};border-color:${s.border};">${s.label}</span>`;
+}
+function stageBadge(id){
+  const s=stg(id);
+  return `<span class="stage-badge" style="color:${s.color};background:${s.color}18;border:1px solid ${s.color}44;">● ${s.short}</span>`;
+}
+function pctBar(val){
+  const c=val===100?"#059669":val>=50?"#d97706":"#dc2626";
+  return `<div class="pct-wrap"><div class="pct-track"><div class="pct-fill" style="width:${val}%;background:${c};"></div></div><span class="pct-label" style="color:${c};">${val}%</span></div>`;
+}
+
+// ─── DASHBOARD RENDER ─────────────────────────────────────────────────────────
+function renderDash(){
+  const mas=state.mas;
+  const search=document.getElementById("search").value.toLowerCase();
+  const sitF=document.getElementById("sit-filter").value;
+  const propF=document.getElementById("prop-filter").value;
+  const stageF=document.getElementById("stage-filter").value;
+
+  // Stats
+  const allProps=mas.flatMap(m=>m.properties);
+  const counts={
+    A:mas.filter(m=>getSit(m)==="A").length,
+    B:mas.filter(m=>getSit(m)==="B").length,
+    C:mas.filter(m=>getSit(m)==="C").length,
+    props:allProps.length,
+    onPortal:allProps.filter(p=>p.rellianceStage!=="not_uploaded").length,
+    accepted:allProps.filter(p=>p.rellianceStage==="accepted").length,
+    withProps:mas.filter(m=>m.properties.length>0).length,
+  };
+  document.getElementById("stat-row").innerHTML=`
+    <div class="stat-card" style="border-top-color:#2563eb;"><div class="stat-label">Total MAs</div><div class="stat-num" style="color:#2563eb;">${mas.length}</div><div class="stat-sub">in system</div></div>
+    <div class="stat-card" style="border-top-color:#059669;"><div class="stat-label">✅ Cleared</div><div class="stat-num" style="color:#059669;">${counts.A}</div><div class="stat-sub">compliant + access</div></div>
+    <div class="stat-card" style="border-top-color:#d97706;"><div class="stat-label">⚡ Restore Access</div><div class="stat-num" style="color:#d97706;">${counts.B}</div><div class="stat-sub">team action needed</div></div>
+    <div class="stat-card" style="border-top-color:#dc2626;"><div class="stat-label">❌ Not Complied</div><div class="stat-num" style="color:#dc2626;">${counts.C}</div><div class="stat-sub">missing SLA/ID/DBS</div></div>
+    <div class="stat-card" style="border-top-color:#0891b2;"><div class="stat-label">Properties in RMS</div><div class="stat-num" style="color:#0891b2;">${counts.props}</div><div class="stat-sub">${counts.withProps} MAs have props</div></div>
+    <div class="stat-card" style="border-top-color:#2563eb;"><div class="stat-label">On Relliance Portal</div><div class="stat-num" style="color:#2563eb;">${counts.onPortal}</div><div class="stat-sub">submitted or beyond</div></div>
+    <div class="stat-card" style="border-top-color:#059669;"><div class="stat-label">Accepted</div><div class="stat-num" style="color:#059669;">${counts.accepted}</div><div class="stat-sub">tenants can be added</div></div>
+  `;
+
+  // Pipeline
+  const pipeHtml=STAGES.map(st=>{
+    const n=allProps.filter(p=>p.rellianceStage===st.id).length;
+    return `<div class="pipe-chip" style="background:${st.color}12;border-color:${st.color}33;"><div class="pipe-dot" style="background:${st.color};"></div><span class="pipe-name" style="color:${st.color};">${st.short}</span><span class="pipe-count">(${n})</span></div>`;
+  }).join("");
+  document.getElementById("pipeline").innerHTML=`<span class="pipe-label">Relliance Portal Pipeline</span>${pipeHtml}`;
+
+  // Stage filter options
+  const stageSelect=document.getElementById("stage-filter");
+  if(stageSelect.options.length===1){
+    STAGES.forEach(s=>{
+      const o=document.createElement("option");
+      o.value=s.id; o.textContent=s.short;
+      stageSelect.appendChild(o);
+    });
+  }
+
+  // Filter
+  const filtered=mas.filter(ma=>{
+    const q=!search||(ma.company.toLowerCase().includes(search)||`${ma.fn} ${ma.ln}`.toLowerCase().includes(search));
+    const s=sitF==="all"||getSit(ma)===sitF;
+    const p=propF==="all"||(propF==="has"&&ma.properties.length>0)||(propF==="none"&&ma.properties.length===0);
+    const st=stageF==="all"||ma.properties.some(pr=>pr.rellianceStage===stageF);
+    return q&&s&&p&&st;
+  });
+  document.getElementById("filter-count").textContent=`${filtered.length} of ${mas.length} shown`;
+
+  // Table
+  const tbody=document.getElementById("dash-tbody");
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:#94a3b8;">No results</td></tr>`;
+    return;
+  }
+  tbody.innerHTML=filtered.map(ma=>{
+    const sit=getSit(ma);
+    const mc=missingC(ma);
+    const onRel=ma.properties.filter(p=>p.rellianceStage!=="not_uploaded").length;
+    const slaCol=ma.sla==="Signed"?"#059669":ma.sla==="Not Required"?"#7c3aed":"#dc2626";
+    return `<tr onclick="showMa('${ma.uid}')">
+      <td>${sitBadge(sit)}</td>
+      <td><div class="ellipsis" style="max-width:165px;font-weight:600;">${ma.company}</div></td>
+      <td style="color:#64748b;font-size:12px;white-space:nowrap;">${ma.fn} ${ma.ln}</td>
+      <td><span style="font-size:11px;font-weight:700;color:${slaCol};">${ma.sla}</span></td>
+      <td style="font-size:15px;">${ma.idCheck?"✅":"❌"}</td>
+      <td style="font-size:15px;">${ma.dbs?"✅":ma.sla==="Not Required"?"—":"❌"}</td>
+      <td style="font-size:15px;">${ma.rmsAccess?"✅":"❌"}</td>
+      <td style="text-align:center;font-weight:700;color:${ma.properties.length>0?"#0891b2":"#94a3b8"};">${ma.properties.length}</td>
+      <td style="text-align:center;font-weight:700;color:${onRel>0?"#2563eb":"#94a3b8"};">${onRel}/${ma.properties.length}</td>
+      <td style="font-size:12px;">${mc.length===0?`<span style="color:#059669;font-weight:600;">All clear</span>`:`<span style="color:#dc2626;font-weight:600;">${mc.join(", ")}</span>`}</td>
+      <td style="font-size:12px;color:#64748b;max-width:130px;"><div class="ellipsis">${ma.notes||"—"}</div></td>
+      <td><button class="btn-sm" onclick="event.stopPropagation();showMa('${ma.uid}')">Open →</button></td>
+    </tr>`;
+  }).join("");
+}
+
+// ─── MA RENDER ────────────────────────────────────────────────────────────────
+function renderMa(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  if(!ma) return;
+  const sit=getSit(ma);
+  const mc=missingC(ma);
+  document.getElementById("ma-title").textContent=ma.company;
+  document.getElementById("ma-sub").textContent=`${ma.fn} ${ma.ln} · ${ma.email}`;
+  const noteEl=document.getElementById("ma-note");
+  if(ma.notes){noteEl.textContent="⚠ "+ma.notes;noteEl.style.display="";}else{noteEl.style.display="none";}
+  document.getElementById("ma-sit-badge").innerHTML=sitBadge(sit);
+  document.getElementById("props-title").textContent=`Properties in RMS (${ma.properties.length})`;
+
+  // Compliance cards
+  document.getElementById("comp-grid").innerHTML=[
+    ["SLA",ma.sla==="Signed"||ma.sla==="Not Required",ma.sla],
+    ["ID Check",ma.idCheck,ma.idCheck?"✓ Received":"✗ Missing"],
+    ["DBS",ma.dbs,ma.dbs?"✓ Received":"✗ Missing"],
+    ["RMS Access",ma.rmsAccess,ma.rmsAccess?"✓ Active":"✗ Blocked"],
+  ].map(([l,ok,v])=>`
+    <div class="comp-card" style="background:${ok?"#f0fdf4":"#fef2f2"};border-color:${ok?"#bbf7d0":"#fecaca"};">
+      <div class="comp-card-label" style="color:#64748b;">${l}</div>
+      <div class="comp-card-val" style="color:${ok?"#059669":"#dc2626"};">${v}</div>
+    </div>`).join("");
+
+  // Alert
+  const alertEl=document.getElementById("ma-alert");
+  if(sit==="B"){alertEl.innerHTML=`<div class="alert alert-amber">⚡ All compliance received — a team member needs to restore RMS access for this MA.</div>`;alertEl.style.display="";}
+  else if(sit==="C"&&mc.length>0){alertEl.innerHTML=`<div class="alert alert-red">❌ Still missing: <strong>${mc.join(", ")}</strong> — chase this MA before uploading to Relliance Portal.</div>`;alertEl.style.display="";}
+  else{alertEl.style.display="none";}
+
+  // Properties table
+  const propsEl=document.getElementById("props-content");
+  if(!ma.properties.length){
+    propsEl.innerHTML=`<div style="padding:24px;text-align:center;color:#94a3b8;font-size:13px;">No properties uploaded to RMS yet</div>`;
+    return;
+  }
+  propsEl.innerHTML=`<div style="overflow-x:auto;"><table>
+    <thead><tr><th>Address</th><th>Type</th><th>Council</th><th>Relliance Portal Stage</th><th>Certs</th><th>Docs</th><th>Missing</th><th></th></tr></thead>
+    <tbody>${ma.properties.map(prop=>{
+      const cp=pctOf(prop.certs),dp=pctOf(prop.docs);
+      const tot=CERTS.filter(c=>!prop.certs[c]).length+DOCS.filter(d=>!prop.docs[d]).length;
+      return `<tr onclick="showProp('${ma.uid}','${prop.id}')">
+        <td><div class="ellipsis" style="max-width:190px;font-weight:600;">${prop.address}</div></td>
+        <td style="color:#64748b;font-size:12px;">${prop.type||"—"}</td>
+        <td style="color:#64748b;font-size:12px;"><div class="ellipsis" style="max-width:110px;">${prop.council||"—"}</div></td>
+        <td>${stageBadge(prop.rellianceStage)}</td>
+        <td style="min-width:90px;">${pctBar(cp)}</td>
+        <td style="min-width:90px;">${pctBar(dp)}</td>
+        <td style="font-size:12px;">${tot===0?`<span style="color:#059669;font-weight:600;">✓ All clear</span>`:`<span style="color:#dc2626;font-weight:600;">${tot} missing</span>`}</td>
+        <td><button class="btn-sm" onclick="event.stopPropagation();showProp('${ma.uid}','${prop.id}')">Open →</button></td>
+      </tr>`;
+    }).join("")}</tbody>
+  </table></div>`;
+}
+
+// ─── PROPERTY RENDER ──────────────────────────────────────────────────────────
+function renderProp(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  if(!ma) return;
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  if(!prop) return;
+
+  document.getElementById("prop-back-btn").onclick=()=>showMa(currentMaUid);
+  document.getElementById("prop-back-btn").textContent=`← Back to ${ma.company}`;
+  document.getElementById("prop-title").textContent=prop.address;
+  document.getElementById("prop-sub").textContent=`${prop.type||"—"}${prop.council?` · ${prop.council}`:""} · ${ma.company}`;
+  document.getElementById("prop-stage-badge").innerHTML=stageBadge(prop.rellianceStage);
+
+  // Alert
+  const mC=CERTS.filter(c=>!prop.certs[c]);
+  const mD=DOCS.filter(d=>!prop.docs[d]);
+  const alertEl=document.getElementById("prop-alert");
+  if(mC.length||mD.length){
+    alertEl.innerHTML=`<div class="alert alert-red"><strong>⚠ Chase this MA — still missing from RMS:</strong>${mC.length?`<br>📋 Certs: ${mC.join(", ")}`:""}${mD.length?`<br>📄 Docs: ${mD.join(", ")}`:""}`;
+    alertEl.style.display="";
+  } else {
+    alertEl.innerHTML=`<div class="alert alert-green">✅ All RMS certs and docs complete for this property</div>`;
+    alertEl.style.display="";
+  }
+
+  // Stage buttons
+  document.getElementById("stage-btns").innerHTML=STAGES.map(st=>`
+    <button class="stage-btn${prop.rellianceStage===st.id?" active":""}"
+      style="border-color:${prop.rellianceStage===st.id?st.color:"#e2e8f0"};background:${prop.rellianceStage===st.id?st.color+"18":"#fff"};color:${prop.rellianceStage===st.id?st.color:"#64748b"};"
+      onclick="setStage('${st.id}')">${st.label}</button>`).join("");
+
+  // Certs
+  const cp=pctOf(prop.certs);
+  document.getElementById("cert-title").textContent=`RMS Certificates (${CERTS.filter(c=>prop.certs[c]).length}/${CERTS.length})`;
+  document.getElementById("cert-bar").style.cssText=`width:${cp}%;background:${cp===100?"#059669":cp>=50?"#d97706":"#dc2626"};`;
+  document.getElementById("cert-pct").style.color=cp===100?"#059669":cp>=50?"#d97706":"#dc2626";
+  document.getElementById("cert-pct").textContent=cp+"%";
+  document.getElementById("cert-list").innerHTML=CERTS.map(c=>`
+    <div class="chk-row">
+      <span class="chk-label" style="color:${prop.certs[c]?"#059669":"#0f172a"};">${prop.certs[c]?"✅":"⬜"} ${c}</span>
+      <input type="checkbox" ${prop.certs[c]?"checked":""} onchange="toggleCert('${c}',this.checked)"
+        style="width:16px;height:16px;cursor:pointer;accent-color:#059669;box-shadow:none;border:none;padding:0;"/>
+    </div>`).join("");
+
+  // Docs
+  const dp=pctOf(prop.docs);
+  document.getElementById("doc-title").textContent=`RMS Documents (${DOCS.filter(d=>prop.docs[d]).length}/${DOCS.length})`;
+  document.getElementById("doc-bar").style.cssText=`width:${dp}%;background:${dp===100?"#059669":dp>=50?"#d97706":"#dc2626"};`;
+  document.getElementById("doc-pct").style.color=dp===100?"#059669":dp>=50?"#d97706":"#dc2626";
+  document.getElementById("doc-pct").textContent=dp+"%";
+  document.getElementById("doc-list").innerHTML=DOCS.map(d=>`
+    <div class="chk-row">
+      <span class="chk-label" style="color:${prop.docs[d]?"#059669":"#0f172a"};">${prop.docs[d]?"✅":"⬜"} ${d}</span>
+      <input type="checkbox" ${prop.docs[d]?"checked":""} onchange="toggleDoc('${d}',this.checked)"
+        style="width:16px;height:16px;cursor:pointer;accent-color:#059669;box-shadow:none;border:none;padding:0;"/>
+    </div>`).join("");
+}
+
+// ─── ACTIONS ──────────────────────────────────────────────────────────────────
+function setStage(stageId){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  prop.rellianceStage=stageId;
+  saveState();
+  renderProp();
+}
+function toggleCert(cert,val){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  prop.certs[cert]=val;
+  saveState();
+  renderProp();
+}
+function toggleDoc(doc,val){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  prop.docs[doc]=val;
+  saveState();
+  renderProp();
+}
+
+// Add Property
+function openAddProp(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  document.getElementById("add-prop-title").textContent=`Add Property — ${ma.company}`;
+  document.getElementById("new-addr").value="";
+  document.getElementById("new-type").value="";
+  document.getElementById("new-council").value="";
+  const sel=document.getElementById("new-stage");
+  sel.innerHTML=STAGES.map(s=>`<option value="${s.id}">${s.label}</option>`).join("");
+  document.getElementById("modal-add-prop").classList.remove("hidden");
+}
+function addProp(){
+  const addr=document.getElementById("new-addr").value.trim();
+  if(!addr) return;
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  ma.properties.push({
+    id:"p-"+Date.now(),
+    address:addr,
+    type:document.getElementById("new-type").value.trim(),
+    council:document.getElementById("new-council").value.trim(),
+    rellianceStage:document.getElementById("new-stage").value,
+    certs:blankC(),docs:blankD(),fromRMS:false,
+  });
+  saveState();
+  closeModal("modal-add-prop");
+  renderMa();
+}
+
+// Edit Compliance
+function openEditComp(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  document.getElementById("edit-comp-title").textContent=`Edit Compliance — ${ma.company}`;
+  document.getElementById("ec-sla").value=ma.sla;
+  document.getElementById("ec-id").checked=ma.idCheck;
+  document.getElementById("ec-id-label").textContent=ma.idCheck?"Yes":"No";
+  document.getElementById("ec-id-label").style.color=ma.idCheck?"#059669":"#dc2626";
+  document.getElementById("ec-dbs").checked=ma.dbs;
+  document.getElementById("ec-dbs-label").textContent=ma.dbs?"Yes":"No";
+  document.getElementById("ec-dbs-label").style.color=ma.dbs?"#059669":"#dc2626";
+  document.getElementById("ec-rms").checked=ma.rmsAccess;
+  document.getElementById("ec-rms-label").textContent=ma.rmsAccess?"Yes":"No";
+  document.getElementById("ec-rms-label").style.color=ma.rmsAccess?"#059669":"#dc2626";
+  document.getElementById("ec-notes").value=ma.notes||"";
+  // live labels
+  ["ec-id","ec-dbs","ec-rms"].forEach(id=>{
+    document.getElementById(id).onchange=function(){
+      const lbl=document.getElementById(id+"-label");
+      lbl.textContent=this.checked?"Yes":"No";
+      lbl.style.color=this.checked?"#059669":"#dc2626";
+    };
+  });
+  document.getElementById("modal-edit-comp").classList.remove("hidden");
+}
+function saveEditComp(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  ma.sla=document.getElementById("ec-sla").value;
+  ma.idCheck=document.getElementById("ec-id").checked;
+  ma.dbs=document.getElementById("ec-dbs").checked;
+  ma.rmsAccess=document.getElementById("ec-rms").checked;
+  ma.notes=document.getElementById("ec-notes").value.trim();
+  saveState();
+  closeModal("modal-edit-comp");
+  renderMa();
+}
+
+function closeModal(id){ document.getElementById(id).classList.add("hidden"); }
+
+function showUnmatched(){
+  document.getElementById("unmatched-list").innerHTML=UNMATCHED_ORGS_RAW.map(org=>`
+    <div style="padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:13px;">
+      <div style="font-weight:600;">${org}</div>
+      <div style="font-size:12px;color:#64748b;margin-top:2px;">May be a test entry or different batch</div>
+    </div>`).join("");
+  document.getElementById("modal-unmatched").classList.remove("hidden");
+}
+
+// Close overlay on backdrop click
+document.querySelectorAll(".overlay").forEach(o=>{
+  o.addEventListener("click",function(e){if(e.target===this) this.classList.add("hidden");});
+});
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+loadState().then(() => {
+  renderDash();
+});
+updateDeadline();
+setInterval(updateDeadline,1000);
+
+// Unmatched button
+if(UNMATCHED_ORGS_RAW.length){
+  const btn=document.getElementById("unmatched-btn");
+  btn.textContent=`⚠ ${UNMATCHED_ORGS_RAW.length} Unmatched Orgs in RMS`;
+  btn.style.display="";
+}
+</script>
+</body>
+</html>
