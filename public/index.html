@@ -62,6 +62,8 @@
   .btn-ghost{background:#fff;color:#64748b;border:1px solid #e2e8f0;border-radius:7px;padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;}
   .btn-amber{background:#fffbeb;color:#d97706;border:1px solid #fcd34d;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
   .btn-red{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn-save{background:#059669;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+  .btn-save:hover{background:#047857;}
 
   /* PCT BAR */
   .pct-wrap{display:flex;align-items:center;gap:5px;}
@@ -91,6 +93,8 @@
   .alert-red{background:#fef2f2;border-color:#fecaca;color:#dc2626;}
   .alert-amber{background:#fffbeb;border-color:#fcd34d;color:#d97706;}
   .alert-green{background:#f0fdf4;border-color:#bbf7d0;color:#059669;}
+  .alert-blue{background:#eff6ff;border-color:#bfdbfe;color:#2563eb;}
+  .alert-purple{background:#f5f3ff;border-color:#ddd6fe;color:#7c3aed;}
 
   /* SECTION */
   .sec{background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
@@ -120,12 +124,38 @@
   .view{display:none;}
   .view.active{display:block;}
 
+  /* NOTES / FOLLOW-UP PANELS */
+  .notes-panel{padding:14px;}
+  .notes-panel textarea{width:100%;border:1px solid #e2e8f0;border-radius:7px;padding:10px 12px;font-family:inherit;font-size:13px;resize:vertical;min-height:70px;color:#0f172a;outline:none;background:#fff;}
+  .notes-panel textarea:focus{border-color:#2563eb;}
+  .notes-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .notes-ts{font-size:11px;color:#94a3b8;}
+
+  /* REASON BOX */
+  .reason-box{margin:0 14px 14px;padding:12px 14px;border-radius:8px;border:1px solid;}
+  .reason-box-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+  .reason-box textarea{width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px;resize:vertical;min-height:60px;outline:none;background:#fff;}
+  .reason-box textarea:focus{border-color:#2563eb;}
+  .reason-box-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .reason-ts{font-size:11px;color:#94a3b8;}
+
+  /* FOLLOW-UP HISTORY */
+  .followup-history{padding:0 14px 14px;}
+  .followup-item{border:1px solid #e2e8f0;border-radius:7px;padding:10px 12px;margin-bottom:8px;background:#fafafa;}
+  .followup-item:last-child{margin-bottom:0;}
+  .followup-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .followup-item-stage{font-size:11px;font-weight:700;}
+  .followup-item-ts{font-size:11px;color:#94a3b8;}
+  .followup-item-text{font-size:13px;color:#334155;}
+
   /* MISC */
   .rms-tag{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;margin-left:6px;}
   .manual-tag{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;}
   .ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .save-indicator{font-size:11px;color:#059669;font-weight:600;opacity:0;transition:opacity .3s;}
   .save-indicator.show{opacity:1;}
+  .inline-saved{font-size:11px;color:#059669;font-weight:600;opacity:0;transition:opacity .3s;}
+  .inline-saved.show{opacity:1;}
 </style>
 </head>
 <body>
@@ -221,10 +251,57 @@
       <span id="prop-stage-badge"></span>
     </div>
     <div id="prop-alert" style="display:none"></div>
+
+    <!-- STAGE SECTION -->
     <div class="sec">
       <div class="sec-head"><span class="sec-title">Uploaded to Relliance Portal — Stage</span></div>
       <div class="stage-btns" id="stage-btns"></div>
+      <!-- APPROVAL DENIED reason box -->
+      <div id="denied-reason-box" class="reason-box" style="display:none;background:#fef2f2;border-color:#fecaca;">
+        <div class="reason-box-label" style="color:#dc2626;">❌ Reason for Approval Denied</div>
+        <textarea id="denied-reason-txt" placeholder="Enter reason why approval was denied…"></textarea>
+        <div class="reason-box-footer">
+          <span class="reason-ts" id="denied-reason-ts"></span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="inline-saved" id="denied-saved">✓ Saved</span>
+            <button class="btn-save" onclick="saveDeniedReason()">Save Reason</button>
+          </div>
+        </div>
+      </div>
+      <!-- FOLLOW UP reason box -->
+      <div id="followup-reason-box" class="reason-box" style="display:none;background:#eff6ff;border-color:#bfdbfe;">
+        <div class="reason-box-label" style="color:#2563eb;">🔄 Follow Up — What's blocking this property?</div>
+        <textarea id="followup-reason-txt" placeholder="e.g. Waiting for Gas Safety Certificate from MA, chased 17/05…"></textarea>
+        <div class="reason-box-footer">
+          <span class="reason-ts" id="followup-reason-ts"></span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="inline-saved" id="followup-saved">✓ Saved</span>
+            <button class="btn-save" onclick="saveFollowupReason()">Save &amp; Log</button>
+          </div>
+        </div>
+      </div>
+      <!-- FOLLOW UP history -->
+      <div id="followup-history-wrap" style="display:none;">
+        <div style="padding:0 14px 6px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Follow-Up Log</div>
+        <div class="followup-history" id="followup-history"></div>
+      </div>
     </div>
+
+    <!-- PROPERTY NOTES SECTION -->
+    <div class="sec">
+      <div class="sec-head">
+        <span class="sec-title">📝 Property Notes &amp; Issues</span>
+        <span class="inline-saved" id="prop-notes-saved">✓ Saved</span>
+      </div>
+      <div class="notes-panel">
+        <textarea id="prop-notes-txt" placeholder="Add notes about why this property can't be uploaded, any issues, caveats, actions needed…"></textarea>
+        <div class="notes-footer">
+          <span class="notes-ts" id="prop-notes-ts"></span>
+          <button class="btn-save" onclick="savePropNotes()">Save Notes</button>
+        </div>
+      </div>
+    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
       <div class="sec">
         <div class="sec-head">
@@ -311,13 +388,19 @@ const CERTS = [
 const DOCS = ["Floor Plan","Lease Agreement","Letter Of Authority","Title Deed"];
 
 const STAGES = [
-  {id:"not_uploaded",   label:"Not Uploaded to Relliance Portal",          short:"Not Uploaded",        color:"#94a3b8"},
-  {id:"details_sub",    label:"Details Submitted to Relliance Portal",      short:"Details Submitted",   color:"#f59e0b"},
-  {id:"details_app",    label:"Details Approved by Relliance",              short:"Details Approved",    color:"#2563eb"},
-  {id:"awaiting",       label:"Awaiting Acceptance",                        short:"Awaiting Acceptance", color:"#f97316"},
-  {id:"certs_up",       label:"Certs Uploaded to Relliance Portal",         short:"Certs Uploaded",      color:"#7c3aed"},
-  {id:"accepted",       label:"Accepted by Relliance",                      short:"Accepted ✓",          color:"#059669"},
+  {id:"not_uploaded",    label:"Not Uploaded to Relliance Portal",         short:"Not Uploaded",        color:"#94a3b8"},
+  {id:"details_sub",     label:"Details Submitted to Relliance Portal",     short:"Details Submitted",   color:"#f59e0b"},
+  {id:"details_app",     label:"Details Approved by Relliance",             short:"Details Approved",    color:"#2563eb"},
+  {id:"awaiting",        label:"Awaiting Acceptance",                       short:"Awaiting Acceptance", color:"#f97316"},
+  {id:"certs_up",        label:"Certs Uploaded to Relliance Portal",        short:"Certs Uploaded",      color:"#7c3aed"},
+  {id:"accepted",        label:"Accepted by Relliance",                     short:"Accepted ✓",          color:"#059669"},
+  {id:"approval_denied", label:"Approval Denied",                           short:"Approval Denied ✗",   color:"#dc2626"},
+  {id:"follow_up",       label:"Follow Up Required",                        short:"Follow Up",           color:"#0891b2"},
 ];
+
+// Stages that show a reason/notes box
+const STAGE_HAS_DENIED  = "approval_denied";
+const STAGE_HAS_FOLLOWUP = "follow_up";
 
 const SIT_CONFIG = {
   A:{label:"Cleared",           color:"#059669",bg:"#d1fae5",border:"#6ee7b7"},
@@ -325,7 +408,7 @@ const SIT_CONFIG = {
   C:{label:"Not Complied",      color:"#dc2626",bg:"#fee2e2",border:"#fca5a5"},
 };
 
-const DEADLINE = new Date("2026-05-19T23:59:00"); // Tuesday
+const DEADLINE = new Date("2026-05-19T23:59:00");
 
 // ─── MA MASTER DATA ───────────────────────────────────────────────────────────
 const MA_MASTER = [
@@ -570,6 +653,11 @@ function missingC(ma){
   if(!ma.dbs&&ma.sla!=="Not Required") m.push("DBS");
   return m;
 }
+function fmtTs(ts){
+  if(!ts) return "";
+  const d=new Date(ts);
+  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+}
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function buildInitial(){
@@ -584,6 +672,10 @@ function buildInitial(){
       properties: matched.map((p,pi)=>({
         id:`p-${i}-${pi}`,address:p.addr,type:p.type,council:p.council,
         rellianceStage:"not_uploaded",certs:blankC(),docs:blankD(),fromRMS:true,
+        propNotes:"", propNotesTs:null,
+        deniedReason:"", deniedReasonTs:null,
+        followupNote:"", followupNoteTs:null,
+        followupLog:[], // [{text, stage, ts}]
       }))
     };
   });
@@ -594,8 +686,19 @@ async function loadState(){
     const res = await fetch("/api/data");
     const saved = await res.json();
     if(saved && saved.mas && saved.mas.length > 0){
+      // Migrate old properties that don't have the new fields
+      saved.mas.forEach(ma=>{
+        ma.properties.forEach(p=>{
+          if(p.propNotes===undefined) p.propNotes="";
+          if(p.propNotesTs===undefined) p.propNotesTs=null;
+          if(p.deniedReason===undefined) p.deniedReason="";
+          if(p.deniedReasonTs===undefined) p.deniedReasonTs=null;
+          if(p.followupNote===undefined) p.followupNote="";
+          if(p.followupNoteTs===undefined) p.followupNoteTs=null;
+          if(p.followupLog===undefined) p.followupLog=[];
+        });
+      });
       state = saved;
-      console.log("Loaded state from server");
     } else {
       state = {mas: buildInitial()};
       await saveState();
@@ -617,6 +720,13 @@ async function saveState(){
     ind.classList.add("show");
     setTimeout(()=>ind.classList.remove("show"),2000);
   } catch(e){ console.error("Save failed",e); }
+}
+
+function flashSaved(elId){
+  const el=document.getElementById(elId);
+  if(!el) return;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),2000);
 }
 
 // ─── DEADLINE COUNTDOWN ───────────────────────────────────────────────────────
@@ -669,7 +779,6 @@ function renderDash(){
   const propF=document.getElementById("prop-filter").value;
   const stageF=document.getElementById("stage-filter").value;
 
-  // Stats
   const allProps=mas.flatMap(m=>m.properties);
   const counts={
     A:mas.filter(m=>getSit(m)==="A").length,
@@ -690,14 +799,12 @@ function renderDash(){
     <div class="stat-card" style="border-top-color:#059669;"><div class="stat-label">Accepted</div><div class="stat-num" style="color:#059669;">${counts.accepted}</div><div class="stat-sub">tenants can be added</div></div>
   `;
 
-  // Pipeline
   const pipeHtml=STAGES.map(st=>{
     const n=allProps.filter(p=>p.rellianceStage===st.id).length;
     return `<div class="pipe-chip" style="background:${st.color}12;border-color:${st.color}33;"><div class="pipe-dot" style="background:${st.color};"></div><span class="pipe-name" style="color:${st.color};">${st.short}</span><span class="pipe-count">(${n})</span></div>`;
   }).join("");
   document.getElementById("pipeline").innerHTML=`<span class="pipe-label">Relliance Portal Pipeline</span>${pipeHtml}`;
 
-  // Stage filter options
   const stageSelect=document.getElementById("stage-filter");
   if(stageSelect.options.length===1){
     STAGES.forEach(s=>{
@@ -707,7 +814,6 @@ function renderDash(){
     });
   }
 
-  // Filter
   const filtered=mas.filter(ma=>{
     const q=!search||(ma.company.toLowerCase().includes(search)||`${ma.fn} ${ma.ln}`.toLowerCase().includes(search));
     const s=sitF==="all"||getSit(ma)===sitF;
@@ -717,7 +823,6 @@ function renderDash(){
   });
   document.getElementById("filter-count").textContent=`${filtered.length} of ${mas.length} shown`;
 
-  // Table
   const tbody=document.getElementById("dash-tbody");
   if(!filtered.length){
     tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:#94a3b8;">No results</td></tr>`;
@@ -758,7 +863,6 @@ function renderMa(){
   document.getElementById("ma-sit-badge").innerHTML=sitBadge(sit);
   document.getElementById("props-title").textContent=`Properties in RMS (${ma.properties.length})`;
 
-  // Compliance cards
   document.getElementById("comp-grid").innerHTML=[
     ["SLA",ma.sla==="Signed"||ma.sla==="Not Required",ma.sla],
     ["ID Check",ma.idCheck,ma.idCheck?"✓ Received":"✗ Missing"],
@@ -770,23 +874,24 @@ function renderMa(){
       <div class="comp-card-val" style="color:${ok?"#059669":"#dc2626"};">${v}</div>
     </div>`).join("");
 
-  // Alert
   const alertEl=document.getElementById("ma-alert");
   if(sit==="B"){alertEl.innerHTML=`<div class="alert alert-amber">⚡ All compliance received — a team member needs to restore RMS access for this MA.</div>`;alertEl.style.display="";}
   else if(sit==="C"&&mc.length>0){alertEl.innerHTML=`<div class="alert alert-red">❌ Still missing: <strong>${mc.join(", ")}</strong> — chase this MA before uploading to Relliance Portal.</div>`;alertEl.style.display="";}
   else{alertEl.style.display="none";}
 
-  // Properties table
   const propsEl=document.getElementById("props-content");
   if(!ma.properties.length){
     propsEl.innerHTML=`<div style="padding:24px;text-align:center;color:#94a3b8;font-size:13px;">No properties uploaded to RMS yet</div>`;
     return;
   }
   propsEl.innerHTML=`<div style="overflow-x:auto;"><table>
-    <thead><tr><th>Address</th><th>Type</th><th>Council</th><th>Relliance Portal Stage</th><th>Certs</th><th>Docs</th><th>Missing</th><th></th></tr></thead>
+    <thead><tr><th>Address</th><th>Type</th><th>Council</th><th>Relliance Portal Stage</th><th>Certs</th><th>Docs</th><th>Notes</th><th>Missing</th><th></th></tr></thead>
     <tbody>${ma.properties.map(prop=>{
       const cp=pctOf(prop.certs),dp=pctOf(prop.docs);
       const tot=CERTS.filter(c=>!prop.certs[c]).length+DOCS.filter(d=>!prop.docs[d]).length;
+      const hasNotes=prop.propNotes&&prop.propNotes.trim();
+      const hasDenied=prop.rellianceStage==="approval_denied"&&prop.deniedReason;
+      const hasFollowup=prop.rellianceStage==="follow_up"&&prop.followupLog&&prop.followupLog.length>0;
       return `<tr onclick="showProp('${ma.uid}','${prop.id}')">
         <td><div class="ellipsis" style="max-width:190px;font-weight:600;">${prop.address}</div></td>
         <td style="color:#64748b;font-size:12px;">${prop.type||"—"}</td>
@@ -794,6 +899,7 @@ function renderMa(){
         <td>${stageBadge(prop.rellianceStage)}</td>
         <td style="min-width:90px;">${pctBar(cp)}</td>
         <td style="min-width:90px;">${pctBar(dp)}</td>
+        <td style="font-size:12px;">${hasNotes?`<span style="color:#d97706;font-weight:600;" title="${prop.propNotes.replace(/"/g,'&quot;')}">📝 Has notes</span>`:hasDenied?`<span style="color:#dc2626;font-weight:600;">❌ Denied</span>`:hasFollowup?`<span style="color:#0891b2;font-weight:600;">🔄 Follow-up</span>`:`<span style="color:#94a3b8;">—</span>`}</td>
         <td style="font-size:12px;">${tot===0?`<span style="color:#059669;font-weight:600;">✓ All clear</span>`:`<span style="color:#dc2626;font-weight:600;">${tot} missing</span>`}</td>
         <td><button class="btn-sm" onclick="event.stopPropagation();showProp('${ma.uid}','${prop.id}')">Open →</button></td>
       </tr>`;
@@ -832,6 +938,47 @@ function renderProp(){
       style="border-color:${prop.rellianceStage===st.id?st.color:"#e2e8f0"};background:${prop.rellianceStage===st.id?st.color+"18":"#fff"};color:${prop.rellianceStage===st.id?st.color:"#64748b"};"
       onclick="setStage('${st.id}')">${st.label}</button>`).join("");
 
+  // Approval Denied reason box
+  const deniedBox=document.getElementById("denied-reason-box");
+  if(prop.rellianceStage==="approval_denied"){
+    deniedBox.style.display="";
+    document.getElementById("denied-reason-txt").value=prop.deniedReason||"";
+    document.getElementById("denied-reason-ts").textContent=prop.deniedReasonTs?`Last saved: ${fmtTs(prop.deniedReasonTs)}`:"";
+  } else {
+    deniedBox.style.display="none";
+  }
+
+  // Follow Up reason box + log
+  const followupBox=document.getElementById("followup-reason-box");
+  const followupHistWrap=document.getElementById("followup-history-wrap");
+  if(prop.rellianceStage==="follow_up"){
+    followupBox.style.display="";
+    document.getElementById("followup-reason-txt").value=prop.followupNote||"";
+    document.getElementById("followup-reason-ts").textContent=prop.followupNoteTs?`Last entry: ${fmtTs(prop.followupNoteTs)}`:"";
+    // Render log
+    const log=prop.followupLog||[];
+    if(log.length>0){
+      followupHistWrap.style.display="";
+      document.getElementById("followup-history").innerHTML=[...log].reverse().map(entry=>`
+        <div class="followup-item">
+          <div class="followup-item-header">
+            <span class="followup-item-stage" style="color:#0891b2;">🔄 Follow Up</span>
+            <span class="followup-item-ts">${fmtTs(entry.ts)}</span>
+          </div>
+          <div class="followup-item-text">${entry.text}</div>
+        </div>`).join("");
+    } else {
+      followupHistWrap.style.display="none";
+    }
+  } else {
+    followupBox.style.display="none";
+    followupHistWrap.style.display="none";
+  }
+
+  // Property notes
+  document.getElementById("prop-notes-txt").value=prop.propNotes||"";
+  document.getElementById("prop-notes-ts").textContent=prop.propNotesTs?`Last saved: ${fmtTs(prop.propNotesTs)}`:"";
+
   // Certs
   const cp=pctOf(prop.certs);
   document.getElementById("cert-title").textContent=`RMS Certificates (${CERTS.filter(c=>prop.certs[c]).length}/${CERTS.length})`;
@@ -867,6 +1014,43 @@ function setStage(stageId){
   saveState();
   renderProp();
 }
+
+function savePropNotes(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  prop.propNotes=document.getElementById("prop-notes-txt").value.trim();
+  prop.propNotesTs=new Date().toISOString();
+  saveState();
+  document.getElementById("prop-notes-ts").textContent=`Last saved: ${fmtTs(prop.propNotesTs)}`;
+  flashSaved("prop-notes-saved");
+}
+
+function saveDeniedReason(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  prop.deniedReason=document.getElementById("denied-reason-txt").value.trim();
+  prop.deniedReasonTs=new Date().toISOString();
+  saveState();
+  document.getElementById("denied-reason-ts").textContent=`Last saved: ${fmtTs(prop.deniedReasonTs)}`;
+  flashSaved("denied-saved");
+}
+
+function saveFollowupReason(){
+  const ma=state.mas.find(m=>m.uid===currentMaUid);
+  const prop=ma.properties.find(p=>p.id===currentPropId);
+  const txt=document.getElementById("followup-reason-txt").value.trim();
+  if(!txt) return;
+  const entry={text:txt, ts:new Date().toISOString()};
+  if(!prop.followupLog) prop.followupLog=[];
+  prop.followupLog.push(entry);
+  prop.followupNote=txt;
+  prop.followupNoteTs=entry.ts;
+  document.getElementById("followup-reason-txt").value="";
+  saveState();
+  flashSaved("followup-saved");
+  renderProp();
+}
+
 function toggleCert(cert,val){
   const ma=state.mas.find(m=>m.uid===currentMaUid);
   const prop=ma.properties.find(p=>p.id===currentPropId);
@@ -904,6 +1088,9 @@ function addProp(){
     council:document.getElementById("new-council").value.trim(),
     rellianceStage:document.getElementById("new-stage").value,
     certs:blankC(),docs:blankD(),fromRMS:false,
+    propNotes:"",propNotesTs:null,
+    deniedReason:"",deniedReasonTs:null,
+    followupNote:"",followupNoteTs:null,followupLog:[],
   });
   saveState();
   closeModal("modal-add-prop");
@@ -925,7 +1112,6 @@ function openEditComp(){
   document.getElementById("ec-rms-label").textContent=ma.rmsAccess?"Yes":"No";
   document.getElementById("ec-rms-label").style.color=ma.rmsAccess?"#059669":"#dc2626";
   document.getElementById("ec-notes").value=ma.notes||"";
-  // live labels
   ["ec-id","ec-dbs","ec-rms"].forEach(id=>{
     document.getElementById(id).onchange=function(){
       const lbl=document.getElementById(id+"-label");
@@ -958,19 +1144,15 @@ function showUnmatched(){
   document.getElementById("modal-unmatched").classList.remove("hidden");
 }
 
-// Close overlay on backdrop click
 document.querySelectorAll(".overlay").forEach(o=>{
   o.addEventListener("click",function(e){if(e.target===this) this.classList.add("hidden");});
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
-loadState().then(() => {
-  renderDash();
-});
+loadState().then(() => { renderDash(); });
 updateDeadline();
 setInterval(updateDeadline,1000);
 
-// Unmatched button
 if(UNMATCHED_ORGS_RAW.length){
   const btn=document.getElementById("unmatched-btn");
   btn.textContent=`⚠ ${UNMATCHED_ORGS_RAW.length} Unmatched Orgs in RMS`;
