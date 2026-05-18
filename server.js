@@ -1,32 +1,58 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const https = require('https');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, 'data.json');
+
+const BIN_ID = '6a0ae32bc0954111d83e7efe';
+const API_KEY = '$2a$10$ffk0IK2fLWCSd8DmDNgCaOUS3EiXiPz0FUFApxAFfuVLd2CmbQ9qK';
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static('public'));
 
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({ mas: [] }));
+function jsonbinRequest(method, data) {
+  return new Promise((resolve, reject) => {
+    const body = data ? JSON.stringify(data) : null;
+    const options = {
+      hostname: 'api.jsonbin.io',
+      path: `/v3/b/${BIN_ID}`,
+      method: method,
+      headers: {
+        'X-Master-Key': API_KEY,
+        'Content-Type': 'application/json',
+        ...(body ? { 'Content-Length': Buffer.byteLength(body) } : {})
+      }
+    };
+    const req = https.request(options, (res) => {
+      let responseData = '';
+      res.on('data', (chunk) => responseData += chunk);
+      res.on('end', () => {
+        try { resolve(JSON.parse(responseData)); }
+        catch (e) { reject(e); }
+      });
+    });
+    req.on('error', reject);
+    if (body) req.write(body);
+    req.end();
+  });
 }
 
-app.get('/api/data', (req, res) => {
+app.get('/api/data', async (req, res) => {
   try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    res.json(JSON.parse(data));
+    const result = await jsonbinRequest('GET');
+    res.json(result.record || { mas: [] });
   } catch (e) {
+    console.error('GET error:', e);
     res.json({ mas: [] });
   }
 });
 
-app.post('/api/data', (req, res) => {
+app.post('/api/data', async (req, res) => {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(req.body));
+    await jsonbinRequest('PUT', req.body);
     res.json({ ok: true });
   } catch (e) {
+    console.error('POST error:', e);
     res.status(500).json({ error: e.message });
   }
 });
