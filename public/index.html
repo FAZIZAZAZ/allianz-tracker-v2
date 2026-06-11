@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Allianz Housing — Relliance Portal Tracker</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;}
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  body{font-family:'Inter',sans-serif;background:#f1f5f9;background-image:radial-gradient(1200px 600px at 100% -10%,#e0f2fe 0%,rgba(224,242,254,0) 55%),radial-gradient(1000px 500px at -10% 0%,#ede9fe 0%,rgba(237,233,254,0) 50%);background-attachment:fixed;color:#0f172a;font-size:14px;-webkit-font-smoothing:antialiased;}
 
   /* HEADER */
-  #hdr{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+  #hdr{background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid #e2e8f0;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 1px 12px rgba(15,23,42,0.06);}
   .logo{font-weight:800;font-size:16px;display:flex;align-items:center;gap:9px;}
-  .logo-icon{background:linear-gradient(135deg,#2563eb,#0891b2);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
+  .logo-icon{background:linear-gradient(135deg,#3b82f6,#0891b2);border-radius:9px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;box-shadow:0 3px 8px rgba(37,99,235,.35);}
   .logo-sep{color:#cbd5e1;margin:0 4px;}
   .logo-sub{font-weight:500;font-size:13px;color:#64748b;}
   #deadline-badge{font-size:12px;font-weight:700;background:#fef3c7;border:1px solid #fcd34d;color:#d97706;border-radius:6px;padding:5px 12px;}
@@ -23,9 +23,10 @@
 
   /* STATS */
   .stat-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:18px;}
-  .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border-top:3px solid #e2e8f0;}
-  .stat-label{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:600;}
-  .stat-num{font-size:26px;font-weight:800;line-height:1;}
+  .stat-card{background:#fff;border:1px solid #e8edf3;border-radius:12px;padding:13px 15px;box-shadow:0 1px 2px rgba(15,23,42,0.04),0 4px 12px rgba(15,23,42,0.03);border-top:3px solid #e2e8f0;transition:transform .18s ease,box-shadow .18s ease;}
+  .stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,23,42,0.10);}
+  .stat-label{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:700;}
+  .stat-num{font-size:27px;font-weight:800;line-height:1;letter-spacing:-.02em;}
   .stat-sub{font-size:10px;color:#94a3b8;margin-top:3px;}
 
   /* PIPELINE */
@@ -43,11 +44,11 @@
   .filter-count{font-size:12px;color:#94a3b8;}
 
   /* TABLE */
-  .tbl-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .tbl-wrap{background:#fff;border:1px solid #e8edf3;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,0.04),0 8px 24px rgba(15,23,42,0.04);}
   table{width:100%;border-collapse:collapse;}
-  th{padding:9px 12px;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid #e2e8f0;background:#f1f5f9;white-space:nowrap;font-weight:600;}
-  td{padding:10px 12px;font-size:13px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
-  tr:hover td{background:#f8fafc;cursor:pointer;}
+  th{padding:10px 12px;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1px solid #e2e8f0;background:linear-gradient(180deg,#f8fafc,#f1f5f9);white-space:nowrap;font-weight:700;}
+  td{padding:11px 12px;font-size:13px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+  tr:hover td{background:#f5f8ff;cursor:pointer;}
   tr:last-child td{border-bottom:none;}
 
   /* BADGES */
@@ -55,8 +56,9 @@
   .stage-badge{border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;}
 
   /* BUTTONS */
-  .btn{background:#2563eb;color:#fff;border:none;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
-  .btn:hover{background:#1d4ed8;}
+  .btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(37,99,235,.28);transition:transform .15s,box-shadow .15s,filter .15s;}
+  .btn:hover{filter:brightness(1.06);box-shadow:0 4px 12px rgba(37,99,235,.38);transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
   .btn-sm{background:#f1f5f9;color:#2563eb;border:1px solid #e2e8f0;border-radius:5px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
   .btn-sm:hover{background:#e2e8f0;}
   .btn-ghost{background:#fff;color:#64748b;border:1px solid #e2e8f0;border-radius:7px;padding:8px 15px;font-size:13px;cursor:pointer;font-family:inherit;}
@@ -97,7 +99,7 @@
   .alert-purple{background:#f5f3ff;border-color:#ddd6fe;color:#7c3aed;}
 
   /* SECTION */
-  .sec{background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+  .sec{background:#fff;border:1px solid #e8edf3;border-radius:13px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 2px rgba(15,23,42,0.04),0 6px 18px rgba(15,23,42,0.03);}
   .sec-head{padding:10px 14px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;background:#f8fafc;}
   .sec-title{font-weight:700;font-size:13px;}
   .chk-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #f1f5f9;}
@@ -154,6 +156,16 @@
   .ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .save-indicator{font-size:11px;color:#059669;font-weight:600;opacity:0;transition:opacity .3s;}
   .save-indicator.show{opacity:1;}
+  /* LIVE STATUS PILL */
+  .conn{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:999px;padding:4px 11px;border:1px solid;letter-spacing:.01em;transition:all .25s;}
+  .conn-dot{width:7px;height:7px;border-radius:50%;}
+  .conn.live{background:#ecfdf5;border-color:#a7f3d0;color:#059669;}
+  .conn.live .conn-dot{background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.18);animation:pulse 2s infinite;}
+  .conn.saving{background:#eff6ff;border-color:#bfdbfe;color:#2563eb;}
+  .conn.saving .conn-dot{background:#2563eb;}
+  .conn.error{background:#fef2f2;border-color:#fecaca;color:#dc2626;}
+  .conn.error .conn-dot{background:#dc2626;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.35);}70%{box-shadow:0 0 0 5px rgba(16,185,129,0);}100%{box-shadow:0 0 0 0 rgba(16,185,129,0);}}
   .inline-saved{font-size:11px;color:#059669;font-weight:600;opacity:0;transition:opacity .3s;}
   .inline-saved.show{opacity:1;}
 </style>
@@ -169,6 +181,7 @@
     <span class="logo-sub">Relliance Portal + Compliance Tracker</span>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
+    <span class="conn live" id="conn-pill"><span class="conn-dot"></span><span id="conn-text">Connecting…</span></span>
     <span class="save-indicator" id="save-ind">✓ Saved</span>
     <button class="btn-amber" id="unmatched-btn" onclick="showUnmatched()" style="display:none"></button>
     <div id="deadline-badge">⏳ Loading...</div>
@@ -377,7 +390,16 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SUPABASE CONFIG  —  paste your two values from the Supabase dashboard here.
+//  (Settings ▸ API ▸ "Project URL" and the "anon / public" key.)
+//  The anon key is SAFE to put here — it is meant to be public.
+// ═══════════════════════════════════════════════════════════════════════════════
+const SUPABASE_URL      = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
+
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 const CERTS = [
   "Asbestos Report","Buildings Insurance","Damp Report",
@@ -635,6 +657,25 @@ let state = { mas: [] };
 let currentMaUid = null;
 let currentPropId = null;
 
+// ─── SUPABASE CLIENT + SYNC STATE ───────────────────────────────────────────────
+// Each MA gets its own database row (id = ma.uid).
+// Two people editing different MAs at the same time never conflict.
+let sb = null;                         // supabase client (set in boot)
+let saveTimer = null;                  // debounce handle
+let lastSyncedMap = new Map();         // uid → last JSON string written, to skip our own realtime echoes
+let pendingRemote = null;              // {uid, data} held while user is typing, applied on focusout
+let loaded = false;                    // true once we've read from Supabase (guards against overwriting)
+
+function setConn(mode){
+  const pill = document.getElementById("conn-pill");
+  const txt  = document.getElementById("conn-text");
+  if(!pill||!txt) return;
+  pill.classList.remove("live","saving","error");
+  if(mode==="live"){ pill.classList.add("live");  txt.textContent="Live"; }
+  else if(mode==="saving"){ pill.classList.add("saving"); txt.textContent="Saving…"; }
+  else { pill.classList.add("error"); txt.textContent="Reconnecting…"; }
+}
+
 function norm(s){ return s.toLowerCase().replace(/[^a-z0-9]/g,""); }
 function blankC(){ return Object.fromEntries(CERTS.map(c=>[c,false])); }
 function blankD(){ return Object.fromEntries(DOCS.map(d=>[d,false])); }
@@ -681,45 +722,143 @@ function buildInitial(){
   });
 }
 
+// Backfill fields added in later versions so older saved MAs still render correctly.
+function migrateMa(ma){
+  (ma.properties||[]).forEach(p=>{
+    if(p.propNotes===undefined) p.propNotes="";
+    if(p.propNotesTs===undefined) p.propNotesTs=null;
+    if(p.deniedReason===undefined) p.deniedReason="";
+    if(p.deniedReasonTs===undefined) p.deniedReasonTs=null;
+    if(p.followupNote===undefined) p.followupNote="";
+    if(p.followupNoteTs===undefined) p.followupNoteTs=null;
+    if(p.followupLog===undefined) p.followupLog=[];
+  });
+  return ma;
+}
+
+// Load all MA rows from Supabase. Never overwrites good data on error.
 async function loadState(){
   try{
-    const res = await fetch("/api/data");
-    const saved = await res.json();
-    if(saved && saved.mas && saved.mas.length > 0){
-      // Migrate old properties that don't have the new fields
-      saved.mas.forEach(ma=>{
-        ma.properties.forEach(p=>{
-          if(p.propNotes===undefined) p.propNotes="";
-          if(p.propNotesTs===undefined) p.propNotesTs=null;
-          if(p.deniedReason===undefined) p.deniedReason="";
-          if(p.deniedReasonTs===undefined) p.deniedReasonTs=null;
-          if(p.followupNote===undefined) p.followupNote="";
-          if(p.followupNoteTs===undefined) p.followupNoteTs=null;
-          if(p.followupLog===undefined) p.followupLog=[];
-        });
-      });
-      state = saved;
+    const { data, error } = await sb.from("tracker").select("id,data");
+    if(error) throw error;
+
+    if(data && data.length > 0){
+      // Reconstruct state.mas from individual rows, sorted by index so order is stable.
+      state.mas = data
+        .map(row => migrateMa(row.data))
+        .filter(Boolean)
+        .sort((a,b)=>(parseInt(a.uid.replace("ma-",""))||0)-(parseInt(b.uid.replace("ma-",""))||0));
+      data.forEach(row => lastSyncedMap.set(row.id, JSON.stringify(row.data)));
+      loaded = true;
     } else {
-      state = {mas: buildInitial()};
-      await saveState();
+      // First run ever — seed all MAs into the database.
+      state.mas = buildInitial();
+      loaded = true;
+      await pushAllState();
     }
+    setConn("live");
   } catch(e){
     console.error("Load failed", e);
-    state = {mas: buildInitial()};
+    setConn("error");
+    // Do NOT reset to defaults here — that is what wiped data in the old version.
+    throw e;
   }
 }
 
-async function saveState(){
+// Save the currently-open MA. Debounced so rapid toggles collapse into one write.
+function saveState(){
+  if(!loaded || !sb || !currentMaUid) return;
+  setConn("saving");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>pushMa(currentMaUid), 500);
+}
+
+// Write a single MA row to Supabase.
+async function pushMa(uid){
+  if(!loaded || !sb) return;
+  const ma = state.mas.find(m=>m.uid===uid);
+  if(!ma) return;
   try{
-    await fetch("/api/data", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(state)
-    });
+    const json = JSON.stringify(ma);
+    lastSyncedMap.set(uid, json);
+    const { error } = await sb.from("tracker")
+      .upsert({ id: uid, data: ma, updated_at: new Date().toISOString() });
+    if(error) throw error;
+    setConn("live");
     const ind=document.getElementById("save-ind");
-    ind.classList.add("show");
-    setTimeout(()=>ind.classList.remove("show"),2000);
-  } catch(e){ console.error("Save failed",e); }
+    if(ind){ ind.classList.add("show"); setTimeout(()=>ind.classList.remove("show"),2000); }
+  } catch(e){
+    console.error("Save failed", e);
+    setConn("error");
+  }
+}
+
+// Seed: write every MA as its own row (first-run only).
+async function pushAllState(){
+  if(!loaded || !sb) return;
+  try{
+    const rows = state.mas.map(ma=>({ id:ma.uid, data:ma, updated_at:new Date().toISOString() }));
+    const { error } = await sb.from("tracker").upsert(rows);
+    if(error) throw error;
+    state.mas.forEach(ma => lastSyncedMap.set(ma.uid, JSON.stringify(ma)));
+    setConn("live");
+  } catch(e){
+    console.error("Seed failed", e);
+    setConn("error");
+  }
+}
+
+// Re-render whichever view is currently on screen (used after a remote update).
+function rerenderCurrent(){
+  if(currentMaUid && !state.mas.find(m=>m.uid===currentMaUid)){
+    currentMaUid=null; currentPropId=null; showDash(); return;
+  }
+  const isProp = document.getElementById("view-prop").classList.contains("active");
+  const isMa   = document.getElementById("view-ma").classList.contains("active");
+  if(isProp && currentPropId) renderProp();
+  else if(isMa && currentMaUid) renderMa();
+  else renderDash();
+}
+
+// Apply a single-MA update from another user. Defer if someone is mid-typing.
+function applyRemote({uid, data}){
+  const ae=document.activeElement;
+  const typing = ae && (ae.tagName==="TEXTAREA" || ae.tagName==="INPUT");
+  if(typing){ pendingRemote = {uid, data}; return; }
+  const idx = state.mas.findIndex(m=>m.uid===uid);
+  if(idx >= 0){
+    state.mas[idx] = migrateMa(data);
+    lastSyncedMap.set(uid, JSON.stringify(data));
+  }
+  rerenderCurrent();
+}
+
+// When the user finishes typing, apply any update we held back.
+document.addEventListener("focusout", ()=>{
+  if(!pendingRemote) return;
+  setTimeout(()=>{
+    const ae=document.activeElement;
+    if(ae && (ae.tagName==="TEXTAREA"||ae.tagName==="INPUT")) return;
+    if(pendingRemote){ const d=pendingRemote; pendingRemote=null; applyRemote(d); }
+  },150);
+});
+
+// Subscribe to live changes — no row filter so any MA updated by anyone arrives here.
+function startRealtime(){
+  sb.channel("tracker-per-ma")
+    .on("postgres_changes",
+        { event:"*", schema:"public", table:"tracker" },
+        payload=>{
+          const uid  = payload.new && payload.new.id;
+          const data = payload.new && payload.new.data;
+          if(!uid || !data) return;
+          if(lastSyncedMap.get(uid) === JSON.stringify(data)) return; // our own write
+          applyRemote({uid, data});
+        })
+    .subscribe(status=>{
+      if(status==="SUBSCRIBED") setConn("live");
+      else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT") setConn("error");
+    });
 }
 
 function flashSaved(elId){
@@ -1149,7 +1288,29 @@ document.querySelectorAll(".overlay").forEach(o=>{
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
-loadState().then(() => { renderDash(); });
+async function boot(){
+  // Guard: config not filled in yet.
+  if(!window.supabase || SUPABASE_URL.startsWith("PASTE_") || SUPABASE_ANON_KEY.startsWith("PASTE_")){
+    setConn("error");
+    document.getElementById("conn-text").textContent="Setup needed";
+    alert("Supabase is not configured yet.\n\nOpen public/index.html and paste your Project URL and anon key into the SUPABASE CONFIG section at the top of the script.");
+    state = { mas: buildInitial() };   // show something so the page isn't blank
+    renderDash();
+    return;
+  }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  setConn("saving");
+  try{
+    await loadState();
+  }catch(e){
+    // Load failed — retry shortly, but still render whatever we have.
+    setConn("error");
+    setTimeout(boot, 4000);
+  }
+  renderDash();
+  startRealtime();
+}
+boot();
 updateDeadline();
 setInterval(updateDeadline,1000);
 
