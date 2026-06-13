@@ -583,10 +583,99 @@
   body.booting .tbl-wrap{animation:rise-in .65s ease .42s both;}
   @keyframes rise-in{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     AGENT CARD GRID  — the new 3D layout
+     ═══════════════════════════════════════════════════════════════════════ */
+  .view-toggle{display:inline-flex;gap:3px;background:rgba(6,18,50,.7);border:1px solid var(--border);border-radius:9px;padding:3px;}
+  .vt-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:transparent;color:var(--txt-dim);border:none;
+    border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;
+    transition:all .18s;
+  }
+  .vt-btn svg{width:14px;height:14px;}
+  .vt-btn:hover{color:var(--txt);}
+  .vt-btn.active{background:linear-gradient(135deg,rgba(59,130,246,.3),rgba(0,229,255,.2));color:#eaf2ff;box-shadow:0 0 14px rgba(0,229,255,.25), inset 0 1px 0 rgba(255,255,255,.08);}
+
+  .ma-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+    gap:14px;perspective:1400px;
+  }
+  .ma-card{
+    position:relative;transform-style:preserve-3d;will-change:transform;
+    background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border);border-radius:16px;padding:16px 16px 14px;overflow:hidden;
+    box-shadow:0 6px 28px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+    transition:transform .14s ease, box-shadow .25s ease, border-color .25s ease;
+    cursor:pointer;
+  }
+  .ma-card:hover{border-color:var(--accent,rgba(0,229,255,.5));box-shadow:0 16px 50px rgba(0,0,0,.6), 0 0 30px color-mix(in srgb,var(--accent,#00e5ff) 35%,transparent);}
+  /* cursor spotlight */
+  .ma-card::after{
+    content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+    background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb,var(--accent,#00e5ff) 22%,transparent), transparent 45%);
+    opacity:0;transition:opacity .3s;
+  }
+  .ma-card:hover::after{opacity:1;}
+  /* rotating border ring */
+  .ma-card::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1.6px;z-index:1;
+    background:conic-gradient(from var(--a,0deg), transparent 0%, var(--accent,#00e5ff) 18%, transparent 38%, transparent 58%, var(--accent,#00e5ff) 78%, transparent 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0;transition:opacity .35s;pointer-events:none;
+  }
+  .ma-card:hover::before{opacity:.9;animation:spin-a 3s linear infinite;}
+  .ma-card>*{position:relative;z-index:2;}
+  /* left status spine */
+  .ma-spine{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);box-shadow:0 0 16px var(--accent);z-index:3;}
+
+  .ma-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;transform:translateZ(26px);}
+  .ma-company{font-size:15px;font-weight:800;color:#eaf2ff;line-height:1.25;letter-spacing:-.01em;}
+  .ma-contact{font-size:11.5px;color:var(--txt-dim);margin-top:3px;}
+  .ma-ring{
+    width:46px;height:46px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fira Code',monospace;font-weight:700;font-size:11px;color:#fff;
+    border:2px solid var(--accent);box-shadow:0 0 16px color-mix(in srgb,var(--accent) 50%,transparent), inset 0 0 12px color-mix(in srgb,var(--accent) 30%,transparent);
+    background:radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--accent) 25%,transparent), transparent 70%);
+  }
+  .ma-status{
+    display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.05em;
+    padding:3px 9px;border-radius:999px;border:1px solid var(--accent);
+    color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);
+    margin-bottom:11px;transform:translateZ(20px);
+  }
+  .ma-chips{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px;transform:translateZ(16px);}
+  .ma-chip{
+    display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;
+    padding:6px 9px;border-radius:8px;border:1px solid;
+    background:rgba(0,0,0,.22);
+  }
+  .ma-chip .lbl{color:var(--txt-dim);text-transform:uppercase;font-size:9px;letter-spacing:.05em;margin-left:auto;}
+  .ma-chip-ico{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ma-chip-ico svg{width:11px;height:11px;}
+  .ma-card-foot{display:flex;align-items:center;justify-content:space-between;padding-top:11px;border-top:1px solid var(--border);transform:translateZ(12px);}
+  .ma-metric{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--txt);}
+  .ma-metric b{font-family:'Fira Code',monospace;color:#eaf2ff;font-size:13px;}
+  .ma-metric svg{width:14px;height:14px;color:var(--txt-dim);}
+  .ma-open{font-size:11px;font-weight:700;color:var(--accent);display:inline-flex;align-items:center;gap:3px;}
+
+  body.booting .ma-card{opacity:0;animation:card-in .5s cubic-bezier(.2,.7,.2,1) forwards;}
+  body.booting .ma-card:nth-child(1){animation-delay:.30s;}
+  body.booting .ma-card:nth-child(2){animation-delay:.36s;}
+  body.booting .ma-card:nth-child(3){animation-delay:.42s;}
+  body.booting .ma-card:nth-child(4){animation-delay:.48s;}
+  body.booting .ma-card:nth-child(5){animation-delay:.54s;}
+  body.booting .ma-card:nth-child(6){animation-delay:.60s;}
+
+  .grid-empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--txt-dim);font-size:13px;}
+
   /* ─── REDUCED MOTION ─────────────────────────────────────────────────── */
   @media(prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
-    .stat-card,.comp-card{transform:none !important;}
+    .stat-card,.comp-card,.ma-card{transform:none !important;}
     body::before,body::after{transform:none !important;}
   }
 </style>
@@ -633,8 +722,23 @@
         <option value="all">All Relliance Portal stages</option>
       </select>
       <span class="filter-count" id="filter-count"></span>
+      <div class="view-toggle" style="margin-left:auto;">
+        <button id="vt-grid" class="vt-btn active" onclick="setLayout('grid')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Grid
+        </button>
+        <button id="vt-table" class="vt-btn" onclick="setLayout('table')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Table
+        </button>
+      </div>
     </div>
-    <div class="tbl-wrap">
+
+    <!-- 3D AGENT CARD GRID -->
+    <div class="ma-grid" id="ma-grid"></div>
+
+    <!-- DENSE TABLE (toggle) -->
+    <div class="tbl-wrap" id="tbl-wrap" style="display:none;">
       <div style="overflow-x:auto;">
         <table>
           <thead>
@@ -691,8 +795,8 @@
       <div class="sec-head"><span class="sec-title">Uploaded to Relliance Portal — Stage</span></div>
       <div class="stage-btns" id="stage-btns"></div>
       <!-- APPROVAL DENIED reason box -->
-      <div id="denied-reason-box" class="reason-box" style="display:none;background:#fef2f2;border-color:#fecaca;">
-        <div class="reason-box-label" style="color:#dc2626;">❌ Reason for Approval Denied</div>
+      <div id="denied-reason-box" class="reason-box" style="display:none;background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.32);">
+        <div class="reason-box-label" style="color:#f87171;">Reason for Approval Denied</div>
         <textarea id="denied-reason-txt" placeholder="Enter reason why approval was denied…"></textarea>
         <div class="reason-box-footer">
           <span class="reason-ts" id="denied-reason-ts"></span>
@@ -703,8 +807,8 @@
         </div>
       </div>
       <!-- FOLLOW UP reason box -->
-      <div id="followup-reason-box" class="reason-box" style="display:none;background:#eff6ff;border-color:#bfdbfe;">
-        <div class="reason-box-label" style="color:#2563eb;">🔄 Follow Up — What's blocking this property?</div>
+      <div id="followup-reason-box" class="reason-box" style="display:none;background:rgba(59,130,246,.09);border-color:rgba(59,130,246,.32);">
+        <div class="reason-box-label" style="color:#60a5fa;">Follow Up — What's blocking this property?</div>
         <textarea id="followup-reason-txt" placeholder="e.g. Waiting for Gas Safety Certificate from MA, chased 17/05…"></textarea>
         <div class="reason-box-footer">
           <span class="reason-ts" id="followup-reason-ts"></span>
@@ -1376,6 +1480,55 @@ function statCard(color,icon,label,num,sub){
   </div>`;
 }
 
+// ─── AGENT CARD (grid layout) ───────────────────────────────────────────────────
+function maCard(ma){
+  const sit=getSit(ma);
+  const acc = sit==="A" ? "#10b981" : sit==="B" ? "#f59e0b" : "#ef4444";
+  const label = sit==="A" ? "Cleared" : sit==="B" ? "Restore Access" : "Not Complied";
+  const onRel = ma.properties.filter(p=>p.rellianceStage!=="not_uploaded").length;
+  const initials = (ma.company||"?").replace(/[^A-Za-z ]/g,"").trim().split(/\s+/)
+                    .slice(0,2).map(w=>w[0]||"").join("").toUpperCase() || "–";
+  const slaOk = ma.sla==="Signed" || ma.sla==="Not Required";
+  const chip=(lbl,ok)=>{
+    const c = ok ? "#10b981" : "#ef4444";
+    const ico = ok ? ICO.check : ICO.x;
+    return `<div class="ma-chip" style="border-color:${c}44;">
+      <span class="ma-chip-ico" style="color:${c};background:${c}22;"><span style="width:11px;height:11px;display:flex;">${ico}</span></span>
+      ${lbl}<span class="lbl">${ok?"ok":"no"}</span></div>`;
+  };
+  return `<div class="ma-card" style="--accent:${acc};" onclick="showMa('${ma.uid}')">
+    <div class="ma-spine"></div>
+    <div class="ma-card-top">
+      <div style="min-width:0;">
+        <div class="ma-status"><span style="width:6px;height:6px;border-radius:50%;background:${acc};box-shadow:0 0 8px ${acc};"></span>${label}</div>
+        <div class="ma-company ellipsis">${ma.company}</div>
+        <div class="ma-contact ellipsis">${ma.fn} ${ma.ln}</div>
+      </div>
+      <div class="ma-ring">${initials}</div>
+    </div>
+    <div class="ma-chips">
+      ${chip("SLA",slaOk)}
+      ${chip("ID Check",ma.idCheck)}
+      ${chip("DBS",ma.dbs||ma.sla==="Not Required")}
+      ${chip("RMS",ma.rmsAccess)}
+    </div>
+    <div class="ma-card-foot">
+      <div class="ma-metric"><span style="width:14px;height:14px;display:flex;">${ICO.building}</span><b>${ma.properties.length}</b>&nbsp;props · <b>${onRel}</b>&nbsp;on portal</div>
+      <span class="ma-open">Open ›</span>
+    </div>
+  </div>`;
+}
+
+let layout = (function(){ try{ return localStorage.getItem("trk-layout")||"grid"; }catch(e){ return "grid"; } })();
+function setLayout(mode){
+  layout = mode;
+  document.getElementById("ma-grid").style.display  = mode==="grid"  ? "grid"  : "none";
+  document.getElementById("tbl-wrap").style.display = mode==="table" ? "block" : "none";
+  document.getElementById("vt-grid").classList.toggle("active", mode==="grid");
+  document.getElementById("vt-table").classList.toggle("active", mode==="table");
+  try{ localStorage.setItem("trk-layout", mode); }catch(e){}
+}
+
 function renderDash(){
   const mas=state.mas;
   const search=document.getElementById("search").value.toLowerCase();
@@ -1427,9 +1580,15 @@ function renderDash(){
   });
   document.getElementById("filter-count").textContent=`${filtered.length} of ${mas.length} shown`;
 
+  // GRID layout
+  document.getElementById("ma-grid").innerHTML = filtered.length
+    ? filtered.map(maCard).join("")
+    : `<div class="grid-empty">No agents match your filters</div>`;
+
+  // TABLE layout
   const tbody=document.getElementById("dash-tbody");
   if(!filtered.length){
-    tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:#94a3b8;">No results</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--txt-dim);">No results</td></tr>`;
     return;
   }
   tbody.innerHTML=filtered.map(ma=>{
@@ -1473,9 +1632,9 @@ function renderMa(){
     ["DBS",ma.dbs,ma.dbs?"✓ Received":"✗ Missing"],
     ["RMS Access",ma.rmsAccess,ma.rmsAccess?"✓ Active":"✗ Blocked"],
   ].map(([l,ok,v])=>`
-    <div class="comp-card" style="background:${ok?"#f0fdf4":"#fef2f2"};border-color:${ok?"#bbf7d0":"#fecaca"};">
-      <div class="comp-card-label" style="color:#64748b;">${l}</div>
-      <div class="comp-card-val" style="color:${ok?"#059669":"#dc2626"};">${v}</div>
+    <div class="comp-card" style="--accent:${ok?"#10b981":"#ef4444"};background:${ok?"rgba(16,185,129,.10)":"rgba(239,68,68,.10)"};border-color:${ok?"rgba(16,185,129,.32)":"rgba(239,68,68,.32)"};">
+      <div class="comp-card-label">${l}</div>
+      <div class="comp-card-val" style="color:${ok?"#10b981":"#ef4444"};">${v}</div>
     </div>`).join("");
 
   const alertEl=document.getElementById("ma-alert");
@@ -1539,7 +1698,7 @@ function renderProp(){
   // Stage buttons
   document.getElementById("stage-btns").innerHTML=STAGES.map(st=>`
     <button class="stage-btn${prop.rellianceStage===st.id?" active":""}"
-      style="border-color:${prop.rellianceStage===st.id?st.color:"#e2e8f0"};background:${prop.rellianceStage===st.id?st.color+"18":"#fff"};color:${prop.rellianceStage===st.id?st.color:"#64748b"};"
+      style="border-color:${prop.rellianceStage===st.id?st.color:"rgba(0,229,255,.18)"};background:${prop.rellianceStage===st.id?st.color+"2b":"rgba(6,18,50,0.6)"};color:${prop.rellianceStage===st.id?"#fff":"var(--txt-dim)"};${prop.rellianceStage===st.id?"box-shadow:0 0 16px "+st.color+"66;":""}"
       onclick="setStage('${st.id}')">${st.label}</button>`).join("");
 
   // Approval Denied reason box
@@ -1591,9 +1750,9 @@ function renderProp(){
   document.getElementById("cert-pct").textContent=cp+"%";
   document.getElementById("cert-list").innerHTML=CERTS.map(c=>`
     <div class="chk-row">
-      <span class="chk-label" style="color:${prop.certs[c]?"#059669":"#0f172a"};">${prop.certs[c]?"✅":"⬜"} ${c}</span>
+      <span class="chk-label" style="color:${prop.certs[c]?"#10b981":"var(--txt)"};display:inline-flex;align-items:center;gap:9px;">${tick(prop.certs[c])} ${c}</span>
       <input type="checkbox" ${prop.certs[c]?"checked":""} onchange="toggleCert('${c}',this.checked)"
-        style="width:16px;height:16px;cursor:pointer;accent-color:#059669;box-shadow:none;border:none;padding:0;"/>
+        style="width:16px;height:16px;cursor:pointer;accent-color:#10b981;box-shadow:none;border:none;padding:0;"/>
     </div>`).join("");
 
   // Docs
@@ -1604,9 +1763,9 @@ function renderProp(){
   document.getElementById("doc-pct").textContent=dp+"%";
   document.getElementById("doc-list").innerHTML=DOCS.map(d=>`
     <div class="chk-row">
-      <span class="chk-label" style="color:${prop.docs[d]?"#059669":"#0f172a"};">${prop.docs[d]?"✅":"⬜"} ${d}</span>
+      <span class="chk-label" style="color:${prop.docs[d]?"#10b981":"var(--txt)"};display:inline-flex;align-items:center;gap:9px;">${tick(prop.docs[d])} ${d}</span>
       <input type="checkbox" ${prop.docs[d]?"checked":""} onchange="toggleDoc('${d}',this.checked)"
-        style="width:16px;height:16px;cursor:pointer;accent-color:#059669;box-shadow:none;border:none;padding:0;"/>
+        style="width:16px;height:16px;cursor:pointer;accent-color:#10b981;box-shadow:none;border:none;padding:0;"/>
     </div>`).join("");
 }
 
@@ -1776,6 +1935,7 @@ async function boot(){
     setTimeout(boot, 4000);
   }
   renderDash();
+  setLayout(layout);
   startRealtime();
 }
 boot();
@@ -1801,7 +1961,7 @@ if(UNMATCHED_ORGS_RAW.length){
 
   // 3D tilt + spotlight on cards (event-delegated so it survives re-renders)
   document.addEventListener("pointermove", e=>{
-    const card = e.target.closest(".stat-card, .comp-card");
+    const card = e.target.closest(".stat-card, .comp-card, .ma-card");
     if(card){
       const r = card.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width;    // 0..1
@@ -1821,7 +1981,7 @@ if(UNMATCHED_ORGS_RAW.length){
 
   // Reset a card the moment the pointer leaves it
   document.addEventListener("pointerout", e=>{
-    const card = e.target.closest && e.target.closest(".stat-card, .comp-card");
+    const card = e.target.closest && e.target.closest(".stat-card, .comp-card, .ma-card");
     if(card){ card.style.transform = ""; if(card===activeCard) activeCard=null; }
   }, {passive:true});
 
