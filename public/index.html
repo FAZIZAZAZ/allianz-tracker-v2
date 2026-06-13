@@ -464,9 +464,91 @@
   ::-webkit-scrollbar-thumb{background:rgba(0,229,255,.2);border-radius:3px;}
   ::-webkit-scrollbar-thumb:hover{background:rgba(0,229,255,.4);}
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     3D INTERACTIVE LAYER  — cursor-reactive tilt, spotlight, parallax depth
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* Parallax-driven background layers (vars updated by JS each frame) */
+  body::before{
+    transform:translate3d(var(--par-x,0px),var(--par-y,0px),0);
+    will-change:transform;
+  }
+  body::after{
+    content:'';position:fixed;inset:-12%;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(38% 38% at 22% 28%, rgba(59,130,246,.12), transparent 62%),
+      radial-gradient(34% 34% at 80% 72%, rgba(168,85,247,.11), transparent 62%),
+      radial-gradient(30% 30% at 60% 12%, rgba(0,229,255,.07), transparent 60%);
+    transform:translate3d(calc(var(--par-x,0px) * -1.7), calc(var(--par-y,0px) * -1.7),0);
+    animation:aurora-drift 22s ease-in-out infinite alternate;
+    will-change:transform;
+  }
+  @keyframes aurora-drift{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(22deg);}}
+
+  /* Perspective stage so child cards tilt in real 3D space */
+  .stat-row{perspective:1100px;}
+  .comp-grid{perspective:1100px;}
+
+  /* Cards become 3D-aware + gain a cursor-following spotlight */
+  .stat-card,.comp-card{
+    position:relative;transform-style:preserve-3d;will-change:transform;
+    transition:transform .12s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .stat-card::after,.comp-card::after{
+    content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+    background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(0,229,255,.20), transparent 42%);
+    opacity:0;transition:opacity .3s;
+  }
+  .stat-card:hover::after,.comp-card:hover::after{opacity:1;}
+  .stat-card>*,.comp-card>*{position:relative;z-index:2;}
+  /* lift the number/label forward in 3D space for parallax inside the card */
+  .stat-num{transform:translateZ(28px);}
+  .stat-label{transform:translateZ(16px);}
+
+  /* Glass sections: gentle hover glow + raise */
+  .sec{transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+  .sec:hover{border-color:var(--border2);box-shadow:0 10px 40px rgba(0,0,0,.55), 0 0 30px rgba(0,229,255,.06);}
+
+  /* Animated header accent beam */
+  #hdr::after{
+    content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
+    background-size:200% 100%;animation:beam 7s linear infinite;opacity:.55;
+  }
+  @keyframes beam{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+  /* Buttons: shine sweep on hover */
+  .btn{position:relative;overflow:hidden;}
+  .btn::after{
+    content:'';position:absolute;top:0;left:-130%;width:55%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
+    transform:skewX(-20deg);transition:left .6s ease;pointer-events:none;
+  }
+  .btn:hover::after{left:150%;}
+
+  /* Table rows: smooth raise on hover */
+  tbody tr{transition:transform .15s ease;}
+  tbody tr:hover{transform:translateX(2px);}
+
+  /* ─── ENTRANCE ANIMATIONS (run once on load via body.booting) ─────────── */
+  body.booting .stat-card{opacity:0;animation:card-in .6s cubic-bezier(.2,.7,.2,1) forwards;}
+  body.booting .stat-card:nth-child(1){animation-delay:.04s;}
+  body.booting .stat-card:nth-child(2){animation-delay:.10s;}
+  body.booting .stat-card:nth-child(3){animation-delay:.16s;}
+  body.booting .stat-card:nth-child(4){animation-delay:.22s;}
+  body.booting .stat-card:nth-child(5){animation-delay:.28s;}
+  body.booting .stat-card:nth-child(6){animation-delay:.34s;}
+  body.booting .stat-card:nth-child(7){animation-delay:.40s;}
+  @keyframes card-in{from{opacity:0;transform:translateY(20px) rotateX(-10deg) scale(.96);}to{opacity:1;transform:none;}}
+  body.booting .pipeline{animation:rise-in .6s ease .3s both;}
+  body.booting .tbl-wrap{animation:rise-in .65s ease .42s both;}
+  @keyframes rise-in{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+
   /* ─── REDUCED MOTION ─────────────────────────────────────────────────── */
   @media(prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+    .stat-card,.comp-card{transform:none !important;}
+    body::before,body::after{transform:none !important;}
   }
 </style>
 </head>
@@ -1588,6 +1670,9 @@ document.querySelectorAll(".overlay").forEach(o=>{
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
+document.body.classList.add("booting");
+setTimeout(()=>document.body.classList.remove("booting"), 1500);
+
 async function boot(){
   // Guard: config not filled in yet.
   if(!window.supabase || SUPABASE_URL.startsWith("PASTE_") || SUPABASE_ANON_KEY.startsWith("PASTE_")){
@@ -1619,6 +1704,59 @@ if(UNMATCHED_ORGS_RAW.length){
   btn.textContent=`⚠ ${UNMATCHED_ORGS_RAW.length} Unmatched Orgs in RMS`;
   btn.style.display="";
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  3D INTERACTIVE ENGINE  — cursor-reactive tilt, spotlight & parallax depth
+// ═══════════════════════════════════════════════════════════════════════════════
+(function(){
+  const fine = window.matchMedia("(pointer:fine)").matches;
+  const reduced = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(!fine || reduced) return;   // skip on touch / reduced-motion
+
+  const MAX_TILT = 8;            // degrees
+  let activeCard = null;
+
+  // 3D tilt + spotlight on cards (event-delegated so it survives re-renders)
+  document.addEventListener("pointermove", e=>{
+    const card = e.target.closest(".stat-card, .comp-card");
+    if(card){
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;    // 0..1
+      const py = (e.clientY - r.top)  / r.height;   // 0..1
+      const rx = (0.5 - py) * MAX_TILT * 2;
+      const ry = (px - 0.5) * MAX_TILT * 2;
+      card.style.transform =
+        `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-5px) translateZ(14px)`;
+      card.style.setProperty("--mx", (px*100).toFixed(1)+"%");
+      card.style.setProperty("--my", (py*100).toFixed(1)+"%");
+      activeCard = card;
+    } else if(activeCard){
+      activeCard.style.transform = "";
+      activeCard = null;
+    }
+  }, {passive:true});
+
+  // Reset a card the moment the pointer leaves it
+  document.addEventListener("pointerout", e=>{
+    const card = e.target.closest && e.target.closest(".stat-card, .comp-card");
+    if(card){ card.style.transform = ""; if(card===activeCard) activeCard=null; }
+  }, {passive:true});
+
+  // Smooth parallax background tied to cursor position
+  let tx=0, ty=0, cx=0, cy=0;
+  window.addEventListener("pointermove", e=>{
+    tx = (e.clientX / window.innerWidth  - 0.5);
+    ty = (e.clientY / window.innerHeight - 0.5);
+  }, {passive:true});
+  (function frame(){
+    cx += (tx - cx) * 0.06;
+    cy += (ty - cy) * 0.06;
+    const root = document.documentElement;
+    root.style.setProperty("--par-x", (cx*22).toFixed(2)+"px");
+    root.style.setProperty("--par-y", (cy*22).toFixed(2)+"px");
+    requestAnimationFrame(frame);
+  })();
+})();
 </script>
 </body>
 </html>
