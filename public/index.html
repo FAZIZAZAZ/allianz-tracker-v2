@@ -510,6 +510,33 @@
   }
   .stat-card:hover::after,.comp-card:hover::after{opacity:1;}
   .stat-card>*,.comp-card>*{position:relative;z-index:2;}
+
+  /* Rotating animated gradient border ring (revealed on hover) */
+  @property --a{syntax:'<angle>';inherits:false;initial-value:0deg;}
+  .stat-card::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1.6px;z-index:1;
+    background:conic-gradient(from var(--a,0deg),
+      transparent 0%, var(--accent,#00e5ff) 18%, transparent 38%,
+      transparent 58%, var(--accent,#00e5ff) 78%, transparent 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0;transition:opacity .35s;pointer-events:none;
+  }
+  .stat-card:hover::before{opacity:.95;animation:spin-a 3s linear infinite;}
+  @keyframes spin-a{to{--a:360deg;}}
+
+  /* Pulsing glow on the accent bar */
+  .stat-accent{animation:accent-pulse 2.6s ease-in-out infinite;}
+  @keyframes accent-pulse{0%,100%{box-shadow:0 0 10px currentColor;}50%{box-shadow:0 0 22px currentColor,0 0 4px currentColor;}}
+
+  /* Sheen sweep across glass panels on hover */
+  .sec,.tbl-wrap{position:relative;overflow:hidden;}
+  .sec::after,.tbl-wrap::after{
+    content:'';position:absolute;top:0;left:-60%;width:45%;height:100%;z-index:3;pointer-events:none;
+    background:linear-gradient(110deg,transparent,rgba(0,229,255,.10),rgba(168,85,247,.08),transparent);
+    transform:skewX(-18deg);transition:left .8s ease;
+  }
+  .sec:hover::after,.tbl-wrap:hover::after{left:130%;}
   /* lift inner elements forward in 3D space for parallax inside the card */
   .stat-num{transform:translateZ(34px);}
   .stat-top{transform:translateZ(20px);}
@@ -1338,7 +1365,7 @@ function animateCounts(){
 }
 
 function statCard(color,icon,label,num,sub){
-  return `<div class="stat-card">
+  return `<div class="stat-card" style="--accent:${color};">
     <div class="stat-accent" style="background:${color};color:${color};"></div>
     <div class="stat-top">
       <div class="stat-ico" style="color:${color};background:${color}1f;border-color:${color}55;"><span style="width:17px;height:17px;display:flex;">${icon}</span></div>
@@ -1769,7 +1796,7 @@ if(UNMATCHED_ORGS_RAW.length){
   const reduced = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
   if(!fine || reduced) return;   // skip on touch / reduced-motion
 
-  const MAX_TILT = 8;            // degrees
+  const MAX_TILT = 14;           // degrees — dialed up for dramatic 3D
   let activeCard = null;
 
   // 3D tilt + spotlight on cards (event-delegated so it survives re-renders)
@@ -1782,7 +1809,7 @@ if(UNMATCHED_ORGS_RAW.length){
       const rx = (0.5 - py) * MAX_TILT * 2;
       const ry = (px - 0.5) * MAX_TILT * 2;
       card.style.transform =
-        `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-5px) translateZ(14px)`;
+        `perspective(750px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-7px) translateZ(40px) scale(1.03)`;
       card.style.setProperty("--mx", (px*100).toFixed(1)+"%");
       card.style.setProperty("--my", (py*100).toFixed(1)+"%");
       activeCard = card;
@@ -1808,8 +1835,8 @@ if(UNMATCHED_ORGS_RAW.length){
     cx += (tx - cx) * 0.06;
     cy += (ty - cy) * 0.06;
     const root = document.documentElement;
-    root.style.setProperty("--par-x", (cx*22).toFixed(2)+"px");
-    root.style.setProperty("--par-y", (cy*22).toFixed(2)+"px");
+    root.style.setProperty("--par-x", (cx*38).toFixed(2)+"px");
+    root.style.setProperty("--par-y", (cy*38).toFixed(2)+"px");
     requestAnimationFrame(frame);
   })();
 })();
