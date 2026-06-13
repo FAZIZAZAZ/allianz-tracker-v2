@@ -72,7 +72,8 @@
     height:60px;position:sticky;top:0;z-index:100;
     box-shadow:0 1px 0 var(--border), 0 4px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(0,229,255,.06);
   }
-  .logo{font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px;color:#e2eeff;letter-spacing:.01em;}
+  .logo{font-weight:800;font-size:15px;display:flex;align-items:center;gap:10px;color:#e2eeff;letter-spacing:.01em;white-space:nowrap;}
+  .logo-txt{white-space:nowrap;}
   .logo-icon{
     background:linear-gradient(135deg,#0ea5e9,#6366f1);
     border-radius:9px;width:34px;height:34px;
@@ -108,20 +109,28 @@
     background:var(--glass);
     backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
     border:1px solid var(--border);
-    border-top:2px solid rgba(0,229,255,.25);
-    border-radius:12px;padding:13px 15px;
+    border-radius:14px;padding:15px 16px 14px;
     box-shadow:0 4px 24px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04);
     transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
-    cursor:default;
+    cursor:default;display:flex;flex-direction:column;min-height:118px;overflow:hidden;
   }
+  /* glowing accent bar that sweeps along the top edge */
+  .stat-card{position:relative;}
+  .stat-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;opacity:.9;box-shadow:0 0 12px currentColor;}
   .stat-card:hover{
-    transform:translateY(-4px) scale(1.02);
     border-color:rgba(0,229,255,.4);
-    box-shadow:0 8px 32px rgba(0,0,0,.5), var(--glow-c), inset 0 1px 0 rgba(255,255,255,.06);
+    box-shadow:0 12px 40px rgba(0,0,0,.55), var(--glow-c), inset 0 1px 0 rgba(255,255,255,.07);
   }
-  .stat-label{font-size:9px;color:var(--txt-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-weight:700;}
-  .stat-num{font-size:26px;font-weight:700;line-height:1;letter-spacing:-.02em;font-family:'Fira Code',monospace;color:#e2eeff;}
-  .stat-sub{font-size:10px;color:var(--txt-dim);margin-top:4px;}
+  .stat-top{display:flex;align-items:center;gap:9px;margin-bottom:auto;}
+  .stat-ico{
+    width:34px;height:34px;border-radius:10px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;border:1px solid;
+    box-shadow:inset 0 0 12px rgba(255,255,255,.04);
+  }
+  .stat-ico svg{width:17px;height:17px;}
+  .stat-label{font-size:9.5px;color:var(--txt-dim);text-transform:uppercase;letter-spacing:.09em;font-weight:700;line-height:1.25;}
+  .stat-num{font-size:32px;font-weight:700;line-height:1;letter-spacing:-.03em;font-family:'Fira Code',monospace;color:#eaf2ff;margin-top:10px;}
+  .stat-sub{font-size:10px;color:var(--txt-dim);margin-top:5px;}
 
   /* ─── PIPELINE ───────────────────────────────────────────────────────── */
   .pipeline{
@@ -501,9 +510,12 @@
   }
   .stat-card:hover::after,.comp-card:hover::after{opacity:1;}
   .stat-card>*,.comp-card>*{position:relative;z-index:2;}
-  /* lift the number/label forward in 3D space for parallax inside the card */
-  .stat-num{transform:translateZ(28px);}
-  .stat-label{transform:translateZ(16px);}
+  /* lift inner elements forward in 3D space for parallax inside the card */
+  .stat-num{transform:translateZ(34px);}
+  .stat-top{transform:translateZ(20px);}
+  .stat-sub{transform:translateZ(12px);}
+  .stat-ico{transition:transform .2s ease;}
+  .stat-card:hover .stat-ico{transform:translateZ(28px) scale(1.08);}
 
   /* Glass sections: gentle hover glow + raise */
   .sec{transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
@@ -558,7 +570,7 @@
 <div id="hdr">
   <div class="logo">
     <div class="logo-icon">A</div>
-    Allianz Housing
+    <span class="logo-txt">Allianz Housing</span>
     <span class="logo-sep">/</span>
     <span class="logo-sub">Relliance Portal + Compliance Tracker</span>
   </div>
@@ -1293,6 +1305,50 @@ function pctBar(val){
 }
 
 // ─── DASHBOARD RENDER ─────────────────────────────────────────────────────────
+// ─── INLINE SVG ICONS (Lucide-style, inherit currentColor) ─────────────────────
+const ICO = {
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>',
+  zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  building:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01"/></svg>',
+  upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>',
+  badge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+};
+function tick(ok){ return ok
+  ? `<span style="display:inline-flex;width:22px;height:22px;border-radius:6px;align-items:center;justify-content:center;color:#10b981;background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.3);"><span style="width:13px;height:13px;display:flex;">${ICO.check}</span></span>`
+  : `<span style="display:inline-flex;width:22px;height:22px;border-radius:6px;align-items:center;justify-content:center;color:#ef4444;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);"><span style="width:13px;height:13px;display:flex;">${ICO.x}</span></span>`; }
+function dashIcon(){ return `<span style="display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;color:#4a6585;"><span style="width:13px;height:13px;display:flex;">${ICO.dash}</span></span>`; }
+
+// Animated count-up for the stat numbers (only on first load, not every re-render)
+function animateCounts(){
+  if(!document.body.classList.contains("booting")) return;
+  document.querySelectorAll("#stat-row .stat-num").forEach(el=>{
+    const target=parseInt(el.textContent,10); if(isNaN(target)) return;
+    const dur=900, t0=performance.now();
+    (function step(now){
+      const p=Math.min(1,(now-t0)/dur);
+      el.textContent=Math.round(target*(1-Math.pow(1-p,3)));
+      if(p<1) requestAnimationFrame(step);
+    })(performance.now());
+  });
+}
+
+function statCard(color,icon,label,num,sub){
+  return `<div class="stat-card">
+    <div class="stat-accent" style="background:${color};color:${color};"></div>
+    <div class="stat-top">
+      <div class="stat-ico" style="color:${color};background:${color}1f;border-color:${color}55;"><span style="width:17px;height:17px;display:flex;">${icon}</span></div>
+      <div class="stat-label">${label}</div>
+    </div>
+    <div class="stat-num" style="color:${color};">${num}</div>
+    <div class="stat-sub">${sub}</div>
+  </div>`;
+}
+
 function renderDash(){
   const mas=state.mas;
   const search=document.getElementById("search").value.toLowerCase();
@@ -1310,15 +1366,15 @@ function renderDash(){
     accepted:allProps.filter(p=>p.rellianceStage==="accepted").length,
     withProps:mas.filter(m=>m.properties.length>0).length,
   };
-  document.getElementById("stat-row").innerHTML=`
-    <div class="stat-card" style="border-top-color:#2563eb;"><div class="stat-label">Total MAs</div><div class="stat-num" style="color:#2563eb;">${mas.length}</div><div class="stat-sub">in system</div></div>
-    <div class="stat-card" style="border-top-color:#059669;"><div class="stat-label">✅ Cleared</div><div class="stat-num" style="color:#059669;">${counts.A}</div><div class="stat-sub">compliant + access</div></div>
-    <div class="stat-card" style="border-top-color:#d97706;"><div class="stat-label">⚡ Restore Access</div><div class="stat-num" style="color:#d97706;">${counts.B}</div><div class="stat-sub">team action needed</div></div>
-    <div class="stat-card" style="border-top-color:#dc2626;"><div class="stat-label">❌ Not Complied</div><div class="stat-num" style="color:#dc2626;">${counts.C}</div><div class="stat-sub">missing SLA/ID/DBS</div></div>
-    <div class="stat-card" style="border-top-color:#0891b2;"><div class="stat-label">Properties in RMS</div><div class="stat-num" style="color:#0891b2;">${counts.props}</div><div class="stat-sub">${counts.withProps} MAs have props</div></div>
-    <div class="stat-card" style="border-top-color:#2563eb;"><div class="stat-label">On Relliance Portal</div><div class="stat-num" style="color:#2563eb;">${counts.onPortal}</div><div class="stat-sub">submitted or beyond</div></div>
-    <div class="stat-card" style="border-top-color:#059669;"><div class="stat-label">Accepted</div><div class="stat-num" style="color:#059669;">${counts.accepted}</div><div class="stat-sub">tenants can be added</div></div>
-  `;
+  document.getElementById("stat-row").innerHTML=
+    statCard("#3b82f6", ICO.users,    "Total MAs",          mas.length,      "in system") +
+    statCard("#10b981", ICO.shield,   "Cleared",            counts.A,        "compliant + access") +
+    statCard("#f59e0b", ICO.zap,      "Restore Access",     counts.B,        "team action needed") +
+    statCard("#ef4444", ICO.alert,    "Not Complied",       counts.C,        "missing SLA / ID / DBS") +
+    statCard("#06b6d4", ICO.building, "Properties in RMS",  counts.props,    counts.withProps+" MAs have props") +
+    statCard("#6366f1", ICO.upload,   "On Relliance Portal",counts.onPortal, "submitted or beyond") +
+    statCard("#10b981", ICO.badge,    "Accepted",           counts.accepted, "tenants can be added");
+  animateCounts();
 
   const pipeHtml=STAGES.map(st=>{
     const n=allProps.filter(p=>p.rellianceStage===st.id).length;
@@ -1359,9 +1415,9 @@ function renderDash(){
       <td><div class="ellipsis" style="max-width:165px;font-weight:600;">${ma.company}</div></td>
       <td style="color:#64748b;font-size:12px;white-space:nowrap;">${ma.fn} ${ma.ln}</td>
       <td><span style="font-size:11px;font-weight:700;color:${slaCol};">${ma.sla}</span></td>
-      <td style="font-size:15px;">${ma.idCheck?"✅":"❌"}</td>
-      <td style="font-size:15px;">${ma.dbs?"✅":ma.sla==="Not Required"?"—":"❌"}</td>
-      <td style="font-size:15px;">${ma.rmsAccess?"✅":"❌"}</td>
+      <td>${tick(ma.idCheck)}</td>
+      <td>${ma.sla==="Not Required"&&!ma.dbs?dashIcon():tick(ma.dbs)}</td>
+      <td>${tick(ma.rmsAccess)}</td>
       <td style="text-align:center;font-weight:700;color:${ma.properties.length>0?"#0891b2":"#94a3b8"};">${ma.properties.length}</td>
       <td style="text-align:center;font-weight:700;color:${onRel>0?"#2563eb":"#94a3b8"};">${onRel}/${ma.properties.length}</td>
       <td style="font-size:12px;">${mc.length===0?`<span style="color:#059669;font-weight:600;">All clear</span>`:`<span style="color:#dc2626;font-weight:600;">${mc.join(", ")}</span>`}</td>
